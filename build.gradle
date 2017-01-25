@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
 }
 
@@ -21,11 +21,30 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    maven {
+        url 'http://dynamodb-local.s3-website-us-west-2.amazonaws.com/release'
+    }
 }
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile 'org.springframework.boot:spring-boot-starter'
+    compile 'com.github.derjust:spring-data-dynamodb:4.3.1'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'com.amazonaws:DynamoDBLocal:1.11.0.1'
+}
+//TODO try to avoid copying by setting multiple dirs in java.library.path
+task copyNativeDeps(type: Copy) {
+    from(configurations.testCompile) {
+        include "*.dylib"
+        include "*.so"
+        include "*.dll"
+    }
+    into 'build/libs'
+}
+
+test.dependsOn copyNativeDeps
+test.doFirst {
+    systemProperty "java.library.path", 'build/libs'
 }
 
 task wrapper(type: Wrapper) {
