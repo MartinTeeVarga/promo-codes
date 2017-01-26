@@ -32,19 +32,18 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'com.amazonaws:DynamoDBLocal:1.11.0.1'
 }
-//TODO try to avoid copying by setting multiple dirs in java.library.path
-task copyNativeDeps(type: Copy) {
-    from(configurations.testCompile) {
-        include "*.dylib"
-        include "*.so"
-        include "*.dll"
-    }
-    into 'build/libs'
-}
 
-test.dependsOn copyNativeDeps
-test.doFirst {
-    systemProperty "java.library.path", 'build/libs'
+test {
+    testLogging {
+        showStandardStreams = true
+    }
+    doFirst {
+        def libs = configurations.testCompile
+                .filter { it.name.endsWith('.dylib') || it.name.endsWith('.so') || it.name.endsWith('.dll') }
+                .collect { it.parent }
+                .join(File.pathSeparator)
+        systemProperty "java.library.path", "$libs"
+    }
 }
 
 task wrapper(type: Wrapper) {
