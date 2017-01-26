@@ -11,9 +11,6 @@ import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.czequered.promocodes.model.Code;
 import org.junit.rules.ExternalResource;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-
 /**
  * Creates a local DynamoDB instance for testing.
  * http://stackoverflow.com/questions/26901613/easier-dynamodb-local-testing
@@ -27,11 +24,10 @@ public class LocalDynamoDBCreationRule extends ExternalResource {
     protected void before() throws Throwable {
 
         try {
-            final String port = getAvailablePort();
-            this.server = ServerRunner.createServerFromCommandLineArgs(new String[]{"-inMemory", "-port", port});
+            this.server = ServerRunner.createServerFromCommandLineArgs(new String[]{"-inMemory", "-port", "8088"});
             server.start();
             amazonDynamoDB = new AmazonDynamoDBClient(new BasicAWSCredentials("access", "secret"));
-            amazonDynamoDB.setEndpoint("http://localhost:" + port);
+            amazonDynamoDB.setEndpoint("http://localhost:8088");
 
             createCodeTable();
         } catch (Exception e) {
@@ -64,11 +60,4 @@ public class LocalDynamoDBCreationRule extends ExternalResource {
         return amazonDynamoDB;
     }
 
-    private String getAvailablePort() {
-        try (final ServerSocket serverSocket = new ServerSocket(0)) {
-            return String.valueOf(serverSocket.getLocalPort());
-        } catch (IOException e) {
-            throw new RuntimeException("Available port was not found", e);
-        }
-    }
 }
