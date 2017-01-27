@@ -11,6 +11,7 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: "jacoco"
 apply plugin: 'org.springframework.boot'
 
 jar {
@@ -48,6 +49,16 @@ test {
         systemProperty "java.library.path", "$libs"
     }
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/jacocoHtml"
+    }
+}
+
+check.dependsOn jacocoTestReport
 
 task wrapper(type: Wrapper) {
     gradleVersion = '3.3'
