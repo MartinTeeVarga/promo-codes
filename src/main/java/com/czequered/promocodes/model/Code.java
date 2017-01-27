@@ -4,11 +4,14 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import org.springframework.data.annotation.Id;
 
-@DynamoDBTable(tableName = "code")
-public class Code {
-    private String game;
-    private String code;
+import java.io.Serializable;
+
+@DynamoDBTable(tableName = "Code")
+public class Code implements Serializable {
+    @Id
+    private CodeId codeId;
     private String from;
     private String to;
     private Boolean pub;
@@ -16,20 +19,27 @@ public class Code {
 
     @DynamoDBHashKey(attributeName = "game")
     public String getGame() {
-        return game;
+        return codeId != null ? codeId.getGame() : null;
     }
 
     public void setGame(String game) {
-        this.game = game;
+        if (codeId == null) {
+            codeId = new CodeId();
+        }
+        this.codeId.setGame(game);
     }
 
     @DynamoDBRangeKey(attributeName = "code")
     public String getCode() {
-        return code;
+        return codeId != null ? codeId.getCode() : null;
     }
 
     public void setCode(String code) {
-        this.code = code;
+        if (codeId == null) {
+            codeId = new CodeId();
+        }
+        this.codeId.setCode(code);
+
     }
 
     @DynamoDBAttribute(attributeName = "from")
@@ -73,25 +83,23 @@ public class Code {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Code code1 = (Code) o;
+        Code code = (Code) o;
 
-        if (!game.equals(code1.game)) return false;
-        if (!code.equals(code1.code)) return false;
-        if (from != null ? !from.equals(code1.from) : code1.from != null) return false;
-        if (to != null ? !to.equals(code1.to) : code1.to != null) return false;
-        if (pub != null ? !pub.equals(code1.pub) : code1.pub != null) return false;
-        return payload != null ? payload.equals(code1.payload) : code1.payload == null;
+        if (!codeId.equals(code.codeId)) return false;
+        if (!from.equals(code.from)) return false;
+        if (!to.equals(code.to)) return false;
+        if (!pub.equals(code.pub)) return false;
+        return payload.equals(code.payload);
 
     }
 
     @Override
     public int hashCode() {
-        int result = game.hashCode();
-        result = 31 * result + code.hashCode();
-        result = 31 * result + (from != null ? from.hashCode() : 0);
-        result = 31 * result + (to != null ? to.hashCode() : 0);
-        result = 31 * result + (pub != null ? pub.hashCode() : 0);
-        result = 31 * result + (payload != null ? payload.hashCode() : 0);
+        int result = codeId.hashCode();
+        result = 31 * result + from.hashCode();
+        result = 31 * result + to.hashCode();
+        result = 31 * result + pub.hashCode();
+        result = 31 * result + payload.hashCode();
         return result;
     }
 }

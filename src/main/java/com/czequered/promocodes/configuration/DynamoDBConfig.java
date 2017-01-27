@@ -1,9 +1,10 @@
 package com.czequered.promocodes.configuration;
 
-import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,27 +16,29 @@ import org.springframework.util.StringUtils;
 public class DynamoDBConfig {
 
     @Value("${amazon.dynamodb.endpoint}")
-    private String amazonDynamoDBEndpoint;
+    private String dynamoDbEndpoint;
 
     @Value("${amazon.aws.accesskey}")
-    private String amazonAWSAccessKey;
+    private String accessKey;
 
     @Value("${amazon.aws.secretkey}")
-    private String amazonAWSSecretKey;
+    private String secretKey;
+
+    @Value("${amazon.aws.region}")
+    private String region;
 
     @Bean
-    public AmazonDynamoDB amazonDynamoDB(AWSCredentials amazonAWSCredentials) {
-        AmazonDynamoDB amazonDynamoDB = new AmazonDynamoDBClient(amazonAWSCredentials);
+    public AmazonDynamoDB amazonDynamoDB() {
+        AmazonDynamoDBClientBuilder builder = AmazonDynamoDBClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("access", "secret")));
 
-        if (!StringUtils.isEmpty(amazonDynamoDBEndpoint)) {
-            amazonDynamoDB.setEndpoint(amazonDynamoDBEndpoint);
+        if (!StringUtils.isEmpty(dynamoDbEndpoint)) {
+            builder = builder.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8088", region));
+        } else {
+            builder = builder.withRegion(region);
         }
-        return amazonDynamoDB;
-    }
 
-    @Bean
-    public AWSCredentials amazonAWSCredentials() {
-        return new BasicAWSCredentials(amazonAWSAccessKey, amazonAWSSecretKey);
+        return builder.build();
     }
 
 }
