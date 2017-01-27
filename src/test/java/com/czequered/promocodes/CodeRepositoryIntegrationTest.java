@@ -1,6 +1,5 @@
 package com.czequered.promocodes;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.czequered.promocodes.model.Code;
 import com.czequered.promocodes.repositories.CodeRepository;
 import org.junit.ClassRule;
@@ -18,9 +17,6 @@ public class CodeRepositoryIntegrationTest {
 
     @Autowired
     CodeRepository repository;
-
-    @Autowired
-    private AmazonDynamoDB amazonDynamoDB;
 
     @ClassRule
     public static final LocalDynamoDBCreationRule dynamoDBProvider = new LocalDynamoDBCreationRule();
