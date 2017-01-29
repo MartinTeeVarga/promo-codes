@@ -1,4 +1,4 @@
-package com.czequered.promocodes.repositories;
+package com.czequered.promocodes.repository;
 
 import com.czequered.promocodes.model.Code;
 import com.czequered.promocodes.model.CodeId;

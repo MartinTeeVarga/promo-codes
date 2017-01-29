@@ -1,7 +1,7 @@
-package com.czequered.promocodes;
+package com.czequered.promocodes.repository;
 
+import com.czequered.promocodes.LocalDynamoDBCreationRule;
 import com.czequered.promocodes.model.Code;
-import com.czequered.promocodes.repositories.CodeRepository;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class CodeRepositoryIntegrationTest {
+public class CodeRepositoryTest {
 
     @Autowired
     CodeRepository repository;
@@ -22,7 +22,7 @@ public class CodeRepositoryIntegrationTest {
     public static final LocalDynamoDBCreationRule dynamoDBProvider = new LocalDynamoDBCreationRule();
 
     @Test
-    public void saveAndFindByGameAncCodeTest() {
+    public void saveAndFindByGameAndCodeTest() {
         Code code = new Code();
         code.setGame("test");
         code.setCode("PUB1");

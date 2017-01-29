@@ -1,4 +1,4 @@
-package com.czequered.promocodes.configuration;
+package com.czequered.promocodes.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -9,19 +9,18 @@ import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRep
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
 
 @Configuration
-@EnableDynamoDBRepositories(basePackages = "com.czequered.promocodes.repositories")
+@EnableDynamoDBRepositories(basePackages = "com.czequered.promocodes.repository")
 public class DynamoDBConfig {
 
-    @Value("${amazon.dynamodb.endpoint}")
+    @Value("${amazon.dynamodb.endpoint:default}")
     private String dynamoDbEndpoint;
 
-    @Value("${amazon.aws.accesskey}")
+    @Value("${amazon.aws.accesskey:access}")
     private String accessKey;
 
-    @Value("${amazon.aws.secretkey}")
+    @Value("${amazon.aws.secretkey:default}")
     private String secretKey;
 
     @Value("${amazon.aws.region}")
@@ -30,12 +29,12 @@ public class DynamoDBConfig {
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
         AmazonDynamoDBClientBuilder builder = AmazonDynamoDBClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("access", "secret")));
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)));
 
-        if (!StringUtils.isEmpty(dynamoDbEndpoint)) {
-            builder = builder.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8088", region));
-        } else {
+        if ("default".equals(dynamoDbEndpoint)) {
             builder = builder.withRegion(region);
+        } else {
+            builder = builder.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8088", region));
         }
 
         return builder.build();

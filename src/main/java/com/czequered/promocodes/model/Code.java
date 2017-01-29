@@ -6,10 +6,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import org.springframework.data.annotation.Id;
 
-import java.io.Serializable;
-
 @DynamoDBTable(tableName = "Code")
-public class Code implements Serializable {
+public class Code {
     @Id
     private CodeId codeId;
     private String from;

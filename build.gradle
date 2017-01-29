@@ -29,9 +29,7 @@ repositories {
 
 dependencies {
     compile 'com.amazonaws:aws-java-sdk-core:1.11.86'
-
     compile 'org.springframework.boot:spring-boot-starter'
-    compile 'org.springframework.boot:spring-boot-starter-data-rest'
     compile 'com.github.derjust:spring-data-dynamodb:4.4.1'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
