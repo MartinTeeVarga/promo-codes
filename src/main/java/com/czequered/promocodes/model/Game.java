@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 
 /**
  * @author Martin Varga
+ * TODO this needs to have an indexed user field
  */
 @DynamoDBTable(tableName = "Game")
 public class Game {
