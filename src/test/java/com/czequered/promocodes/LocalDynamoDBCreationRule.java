@@ -15,6 +15,10 @@ import com.czequered.promocodes.model.Game;
 import com.czequered.promocodes.model.User;
 import org.junit.rules.ExternalResource;
 
+/**
+ * @author Martin Varga
+ *         inspired by similar code found at StackOverflow
+ */
 public class LocalDynamoDBCreationRule extends ExternalResource {
 
     private DynamoDBProxyServer server;

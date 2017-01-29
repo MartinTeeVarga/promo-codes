@@ -11,7 +11,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 /**
  * @author Martin Varga
  */
-
 public interface CodeRepository extends PagingAndSortingRepository<Code, CodeId> {
 
     Code findByGameAndCode(String game, String code);
