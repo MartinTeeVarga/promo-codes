@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author Martin Varga
+ */
 @Configuration
 @EnableDynamoDBRepositories(basePackages = "com.czequered.promocodes.repository")
 public class DynamoDBConfig {

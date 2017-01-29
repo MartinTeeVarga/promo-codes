@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,6 +22,25 @@ public class CodeRepositoryTest {
 
     @ClassRule
     public static final LocalDynamoDBCreationRule dynamoDBProvider = new LocalDynamoDBCreationRule();
+
+    @Test(expected = IllegalArgumentException.class)
+    public void findAllTest() {
+        repository.findAll();
+    }
+
+    @Test
+    public void findAllPageableTest() {
+        for (int i = 0; i < 4; i++) {
+            Code code = new Code();
+            code.setGame("test");
+            code.setCode("PUB" + i);
+            repository.save(code);
+        }
+        Page<Code> all = repository.findAll(new PageRequest(0, 3));
+        assertThat(all.getTotalElements()).isEqualTo(4);
+        assertThat(all.getTotalPages()).isEqualTo(2);
+        assertThat(all.getContent()).hasSize(3);
+    }
 
     @Test
     public void saveAndFindByGameAndCodeTest() {

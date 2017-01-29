@@ -5,6 +5,9 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 
 import java.io.Serializable;
 
+/**
+ * @author Martin Varga
+ */
 public class CodeId implements Serializable {
     private static final long serialVersionUID = 1L;
 

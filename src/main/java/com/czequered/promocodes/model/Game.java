@@ -5,6 +5,9 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import org.springframework.data.annotation.Id;
 
+/**
+ * @author Martin Varga
+ */
 @DynamoDBTable(tableName = "Game")
 public class Game {
     private String id;

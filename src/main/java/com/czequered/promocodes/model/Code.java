@@ -6,6 +6,9 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import org.springframework.data.annotation.Id;
 
+/**
+ * @author Martin Varga
+ */
 @DynamoDBTable(tableName = "Code")
 public class Code {
     @Id
@@ -84,20 +87,20 @@ public class Code {
         Code code = (Code) o;
 
         if (!codeId.equals(code.codeId)) return false;
-        if (!from.equals(code.from)) return false;
-        if (!to.equals(code.to)) return false;
-        if (!pub.equals(code.pub)) return false;
-        return payload.equals(code.payload);
+        if (from != null ? !from.equals(code.from) : code.from != null) return false;
+        if (to != null ? !to.equals(code.to) : code.to != null) return false;
+        if (pub != null ? !pub.equals(code.pub) : code.pub != null) return false;
+        return payload != null ? payload.equals(code.payload) : code.payload == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = codeId.hashCode();
-        result = 31 * result + from.hashCode();
-        result = 31 * result + to.hashCode();
-        result = 31 * result + pub.hashCode();
-        result = 31 * result + payload.hashCode();
+        result = 31 * result + (from != null ? from.hashCode() : 0);
+        result = 31 * result + (to != null ? to.hashCode() : 0);
+        result = 31 * result + (pub != null ? pub.hashCode() : 0);
+        result = 31 * result + (payload != null ? payload.hashCode() : 0);
         return result;
     }
 }
