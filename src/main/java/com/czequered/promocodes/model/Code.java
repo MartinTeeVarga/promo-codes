@@ -86,21 +86,12 @@ public class Code {
 
         Code code = (Code) o;
 
-        if (!codeId.equals(code.codeId)) return false;
-        if (from != null ? !from.equals(code.from) : code.from != null) return false;
-        if (to != null ? !to.equals(code.to) : code.to != null) return false;
-        if (pub != null ? !pub.equals(code.pub) : code.pub != null) return false;
-        return payload != null ? payload.equals(code.payload) : code.payload == null;
+        return codeId.equals(code.codeId);
 
     }
 
     @Override
     public int hashCode() {
-        int result = codeId.hashCode();
-        result = 31 * result + (from != null ? from.hashCode() : 0);
-        result = 31 * result + (to != null ? to.hashCode() : 0);
-        result = 31 * result + (pub != null ? pub.hashCode() : 0);
-        result = 31 * result + (payload != null ? payload.hashCode() : 0);
-        return result;
+        return codeId.hashCode();
     }
 }

@@ -50,17 +50,12 @@ public class User {
 
         User user = (User) o;
 
-        if (games != user.games) return false;
-        if (id != null ? !id.equals(user.id) : user.id != null) return false;
-        return details != null ? details.equals(user.details) : user.details == null;
+        return id.equals(user.id);
 
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (details != null ? details.hashCode() : 0);
-        result = 31 * result + games;
-        return result;
+        return id.hashCode();
     }
 }

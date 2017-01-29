@@ -49,17 +49,12 @@ public class Game {
 
         Game game = (Game) o;
 
-        if (codes != game.codes) return false;
-        if (!id.equals(game.id)) return false;
-        return details.equals(game.details);
+        return id.equals(game.id);
 
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + details.hashCode();
-        result = 31 * result + codes;
-        return result;
+        return id.hashCode();
     }
 }
