@@ -12,8 +12,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CodeServiceImpl implements CodeService {
-    @Autowired
     private CodeRepository repository;
+
+    @Autowired
+    public CodeServiceImpl(CodeRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public Page<Code> getCodes(int page) {
