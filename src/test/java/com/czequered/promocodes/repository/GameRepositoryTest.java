@@ -38,17 +38,17 @@ public class GameRepositoryTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void findAllTest() {
+    public void findAll() {
         repository.findAll();
     }
 
     @Test
-    public void findByGameIdTest() {
+    public void findByGameId() {
 
     }
 
     @Test
-    public void findAllPageableTest() {
+    public void findAllPageable() {
         Game game = new Game();
         game.setUserId("krtek");
         game.setGameId("game");

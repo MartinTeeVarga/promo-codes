@@ -1,6 +1,7 @@
 package com.czequered.promocodes.repository;
 
 import com.czequered.promocodes.model.Code;
+import com.czequered.promocodes.model.CodeCompositeId;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -43,28 +44,33 @@ public class CodeRepositoryTest {
     }
 
     @Test
-    public void findAllPageableTest() {
+    public void findAllByGameId() {
         for (int i = 0; i < 4; i++) {
             Code code = new Code();
             code.setGameId("test");
             code.setCodeId("PUB" + i);
             repository.save(code);
+
+            Code otherCode = new Code();
+            otherCode.setGameId("no-test");
+            otherCode.setCodeId("PRV" + i);
+            repository.save(otherCode);
         }
-        Page<Code> all = repository.findAll(new PageRequest(0, 3));
+        Page<Code> all = repository.findByGameId("test", new PageRequest(0, 3));
         assertThat(all.getTotalElements()).isEqualTo(4);
         assertThat(all.getTotalPages()).isEqualTo(2);
         assertThat(all.getContent()).hasSize(3);
     }
 
     @Test
-    public void findAllPageNotFoundTest() {
+    public void findAllByGameIdPageNotFound() {
         for (int i = 0; i < 3; i++) {
             Code code = new Code();
             code.setGameId("test");
             code.setCodeId("PUB" + i);
             repository.save(code);
         }
-        Page<Code> all = repository.findAll(new PageRequest(1, 3));
+        Page<Code> all = repository.findByGameId("test", new PageRequest(1, 3));
         all.forEach(c -> System.out.println("c.getCodeId() = " + c.getCodeId()));
         assertThat(all.getTotalElements()).isEqualTo(3);
         assertThat(all.getTotalPages()).isEqualTo(1);
@@ -72,7 +78,7 @@ public class CodeRepositoryTest {
     }
 
     @Test
-    public void findByGameAndCodeTest() {
+    public void findByGameAndCode() {
         Code code = new Code();
         code.setGameId("test");
         code.setCodeId("PUB1");
@@ -87,7 +93,7 @@ public class CodeRepositoryTest {
     }
 
     @Test
-    public void findByGameTest() {
+    public void findByGame() {
         Code game1Code = new Code();
         game1Code.setGameId("game1");
         game1Code.setCodeId("PUB1");
@@ -103,5 +109,18 @@ public class CodeRepositoryTest {
 
         Page<Code> retrieved2 = repository.findByGameId("game2", new PageRequest(0, 2));
         assertThat(retrieved2).containsExactly(game2Code);
+    }
+
+    @Test
+    public void delete() {
+        Code code = new Code();
+        code.setGameId("test");
+        code.setCodeId("PUB1");
+        repository.save(code);
+        Code foundBefore = repository.findByGameIdAndCodeId("test", "PUB1");
+        assertThat(foundBefore).isEqualTo(code);
+        repository.delete(new CodeCompositeId("test", "PUB1"));
+        Code foundAfter = repository.findByGameIdAndCodeId("test", "PUB1");
+        assertThat(foundAfter).isNull();
     }
 }

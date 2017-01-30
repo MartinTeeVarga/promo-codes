@@ -19,7 +19,4 @@ public interface CodeRepository extends PagingAndSortingRepository<Code, CodeCom
     @EnableScanCount
     Page<Code> findByGameId(String gameId, Pageable pageable);
 
-    @EnableScan
-    @EnableScanCount
-    Page<Code> findAll(Pageable pageable);
 }

@@ -49,7 +49,7 @@ public class CodeControllerTest {
     }
 
     @Test
-    public void listTest() throws Exception {
+    public void list() throws Exception {
         Code code = new Code();
         code.setGameId("test");
         code.setCodeId("PUB1");
@@ -87,7 +87,7 @@ public class CodeControllerTest {
     }
 
     @Test
-    public void getCodeTest() throws Exception {
+    public void getCode() throws Exception {
         Code code = new Code();
         code.setGameId("test");
         code.setCodeId("PUB1");
@@ -100,7 +100,7 @@ public class CodeControllerTest {
     }
 
     @Test
-    public void getCodeNotFoundTest() throws Exception {
+    public void getCodeNotFound() throws Exception {
         Code code = new Code();
         code.setGameId("test");
         code.setCodeId("PUB2");

@@ -43,7 +43,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void findAllPageableTest() {
+    public void findAllPageable() {
         User user = new User();
         user.setId("krtek");
         user.setDetails("{}");

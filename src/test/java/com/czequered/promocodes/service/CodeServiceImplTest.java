@@ -1,6 +1,7 @@
 package com.czequered.promocodes.service;
 
 import com.czequered.promocodes.model.Code;
+import com.czequered.promocodes.model.CodeCompositeId;
 import com.czequered.promocodes.repository.CodeRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class CodeServiceTest {
+public class CodeServiceImplTest {
 
     private CodeService service;
 
@@ -35,7 +36,7 @@ public class CodeServiceTest {
     }
 
     @Test
-    public void getCodesTest() throws Exception {
+    public void getCodes() throws Exception {
         Code code = new Code();
         code.setGameId("test");
         code.setCodeId("PUB1");
@@ -45,7 +46,7 @@ public class CodeServiceTest {
     }
 
     @Test
-    public void getCodeTest() {
+    public void getCode() {
         Code code = new Code();
         code.setGameId("test");
         code.setCodeId("PUB1");
@@ -53,6 +54,24 @@ public class CodeServiceTest {
         when(codeRepository.findByGameIdAndCodeId(eq("test"), eq("PUB1"))).thenReturn(code);
         Code retrieved = service.getCode("test", "PUB1");
         assertThat(retrieved.getPayload()).isEqualTo("Hello");
+    }
+
+    @Test
+    public void deleteCode() throws Exception {
+        service.deleteCode("test", "PUB1");
+        CodeCompositeId toDelete = new CodeCompositeId("test", "PUB1");
+        verify(codeRepository).delete(eq(toDelete));
+        verifyNoMoreInteractions(codeRepository);
+    }
+
+    @Test
+    public void saveCode() throws Exception {
+        Code code = new Code();
+        code.setGameId("test");
+        code.setCodeId("PUB1");
+        service.saveCode(code);
+        verify(codeRepository).save(eq(code));
+        verifyNoMoreInteractions(codeRepository);
     }
 
 }
