@@ -38,9 +38,6 @@ public class CodeController {
     public HttpEntity<PagedResources<CodeResource>> list(@RequestParam(value = "page", required = false) Integer pageNumber) {
         Integer actualPageNumber = pageNumber == null ? 0 : pageNumber;
         Page<Code> codes = service.getCodes(actualPageNumber);
-        if (codes == null) {
-            throw new CodeNotFoundException();
-        }
 
         List<CodeResource> codeResources = assembler.toResources(codes.getContent());
         PagedResources.PageMetadata pageMetadata = new PagedResources.PageMetadata(codes.getNumberOfElements(), codes.getNumber(), codes.getTotalElements(), codes.getTotalPages());
