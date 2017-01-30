@@ -2,11 +2,9 @@ package com.czequered.promocodes.service;
 
 import com.czequered.promocodes.model.Code;
 import com.czequered.promocodes.repository.CodeRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,8 +13,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collections;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Martin Varga
@@ -40,8 +39,20 @@ public class CodeServiceTest {
         Code code = new Code();
         code.setGame("test");
         code.setCode("PUB1");
-        Mockito.doReturn(new PageImpl<>(Collections.singletonList(code))).when(codeRepository).findAll(any(Pageable.class));
+        when(codeRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.singletonList(code)));
         Page<Code> codes = service.getCodes(0);
-        Assertions.assertThat(codes).containsExactly(code);
+        assertThat(codes).containsExactly(code);
     }
+
+    @Test
+    public void getCodeTest() {
+        Code code = new Code();
+        code.setGame("test");
+        code.setCode("PUB1");
+        code.setPayload("Hello");
+        when(codeRepository.findByGameAndCode(eq("test"), eq("PUB1"))).thenReturn(code);
+        Code retrieved = service.getCode("test", "PUB1");
+        assertThat(retrieved.getPayload()).isEqualTo("Hello");
+    }
+
 }

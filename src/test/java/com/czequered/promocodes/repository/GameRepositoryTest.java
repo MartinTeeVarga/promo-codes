@@ -1,6 +1,5 @@
 package com.czequered.promocodes.repository;
 
-import com.czequered.promocodes.LocalDynamoDBCreationRule;
 import com.czequered.promocodes.model.Game;
 import org.junit.After;
 import org.junit.Before;

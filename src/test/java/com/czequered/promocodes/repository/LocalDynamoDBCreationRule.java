@@ -1,4 +1,4 @@
-package com.czequered.promocodes;
+package com.czequered.promocodes.repository;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
