@@ -17,16 +17,16 @@ import org.springframework.context.annotation.Configuration;
 @EnableDynamoDBRepositories(basePackages = "com.czequered.promocodes.repository")
 public class DynamoDBConfig {
 
-    @Value("${amazon.dynamodb.endpoint:default}")
+    @Value("${aws.dynamodb.endpoint:default}")
     private String dynamoDbEndpoint;
 
-    @Value("${amazon.aws.accesskey:access}")
+    @Value("${aws.accesskey:access}")
     private String accessKey;
 
-    @Value("${amazon.aws.secretkey:secret}")
+    @Value("${aws.secretkey:secret}")
     private String secretKey;
 
-    @Value("${amazon.aws.region}")
+    @Value("${aws.region}")
     private String region;
 
     @Bean
