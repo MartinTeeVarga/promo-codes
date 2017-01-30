@@ -23,4 +23,9 @@ public class CodeServiceImpl implements CodeService {
     public Page<Code> getCodes(int page) {
         return repository.findAll(new PageRequest(page, CodeService.PAGE_LIMIT));
     }
+
+    @Override
+    public Code getCode(String game, String code) {
+        return repository.findByGameAndCode(game, code);
+    }
 }

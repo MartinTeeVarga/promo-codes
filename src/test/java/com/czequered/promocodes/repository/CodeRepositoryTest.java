@@ -2,6 +2,8 @@ package com.czequered.promocodes.repository;
 
 import com.czequered.promocodes.LocalDynamoDBCreationRule;
 import com.czequered.promocodes.model.Code;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +28,16 @@ public class CodeRepositoryTest {
     @ClassRule
     public static final LocalDynamoDBCreationRule dynamoDBProvider = new LocalDynamoDBCreationRule();
 
+    @Before
+    public void before() {
+        dynamoDBProvider.createTable(Code.class);
+    }
+
+    @After
+    public void after() {
+        dynamoDBProvider.deleteTable(Code.class);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void findAllTest() {
         repository.findAll();
@@ -43,6 +55,21 @@ public class CodeRepositoryTest {
         assertThat(all.getTotalElements()).isEqualTo(4);
         assertThat(all.getTotalPages()).isEqualTo(2);
         assertThat(all.getContent()).hasSize(3);
+    }
+
+    @Test
+    public void findAllPageNotFoundTest() {
+        for (int i = 0; i < 3; i++) {
+            Code code = new Code();
+            code.setGame("test");
+            code.setCode("PUB" + i);
+            repository.save(code);
+        }
+        Page<Code> all = repository.findAll(new PageRequest(1, 3));
+        all.forEach(c -> System.out.println("c.getCode() = " + c.getCode()));
+        assertThat(all.getTotalElements()).isEqualTo(3);
+        assertThat(all.getTotalPages()).isEqualTo(1);
+        assertThat(all.getContent()).hasSize(0);
     }
 
     @Test

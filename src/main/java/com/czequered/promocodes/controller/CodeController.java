@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +20,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * @author Martin Varga
  */
 @RestController
-@RequestMapping("/v1/codes")
+@RequestMapping("/v1/games/{gameId}/codes")
 public class CodeController {
 
     private CodeService service;
@@ -34,14 +35,28 @@ public class CodeController {
     @RequestMapping(value = "/list",
             method = GET,
             produces = APPLICATION_JSON_VALUE)
-    public HttpEntity<PagedResources<CodeResource>> list(@RequestParam(required = false) Integer pageNumber) {
+    public HttpEntity<PagedResources<CodeResource>> list(@RequestParam(value = "page", required = false) Integer pageNumber) {
         Integer actualPageNumber = pageNumber == null ? 0 : pageNumber;
         Page<Code> codes = service.getCodes(actualPageNumber);
+        if (codes == null) {
+            throw new CodeNotFoundException();
+        }
 
         List<CodeResource> codeResources = assembler.toResources(codes.getContent());
-
         PagedResources.PageMetadata pageMetadata = new PagedResources.PageMetadata(codes.getNumberOfElements(), codes.getNumber(), codes.getTotalElements(), codes.getTotalPages());
         PagedResources<CodeResource> pagedResources = new PagedResources<CodeResource>(codeResources, pageMetadata);
         return new HttpEntity<>(pagedResources);
+    }
+
+    @RequestMapping(value = "/{codeId}",
+            method = GET,
+            produces = APPLICATION_JSON_VALUE)
+    public HttpEntity<CodeResource> getCode(@PathVariable("gameId") String game, @PathVariable("codeId") String code) {
+        Code retrieved = service.getCode(game, code);
+        if (retrieved == null) {
+            throw new CodeNotFoundException();
+        }
+        CodeResource codeResource = assembler.toResource(retrieved);
+        return new HttpEntity<>(codeResource);
     }
 }

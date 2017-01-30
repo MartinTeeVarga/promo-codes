@@ -9,10 +9,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.local.main.ServerRunner;
 import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
+import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
-import com.czequered.promocodes.model.Code;
-import com.czequered.promocodes.model.Game;
-import com.czequered.promocodes.model.User;
 import org.junit.rules.ExternalResource;
 
 /**
@@ -22,6 +20,7 @@ import org.junit.rules.ExternalResource;
 public class LocalDynamoDBCreationRule extends ExternalResource {
 
     private DynamoDBProxyServer server;
+
     private AmazonDynamoDB amazonDynamoDB;
 
     @Override
@@ -34,20 +33,22 @@ public class LocalDynamoDBCreationRule extends ExternalResource {
                     .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("access", "secret")))
                     .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8088", "ap-southeast-2"))
                     .build();
-            createTable(Code.class);
-            createTable(Game.class);
-            createTable(User.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void createTable(Class<?> clazz) {
-
+    public void createTable(Class<?> clazz) {
         DynamoDBMapper mapper = new DynamoDBMapper(amazonDynamoDB);
         CreateTableRequest createTableRequest = mapper.generateCreateTableRequest(clazz);
         createTableRequest.setProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
         amazonDynamoDB.createTable(createTableRequest);
+    }
+
+    public void deleteTable(Class<?> clazz) {
+        DynamoDBMapper mapper = new DynamoDBMapper(amazonDynamoDB);
+        DeleteTableRequest deleteTableRequest = mapper.generateDeleteTableRequest(clazz);
+        amazonDynamoDB.deleteTable(deleteTableRequest);
     }
 
     @Override
@@ -62,6 +63,5 @@ public class LocalDynamoDBCreationRule extends ExternalResource {
             throw new RuntimeException(e);
         }
     }
-
 
 }

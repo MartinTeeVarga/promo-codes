@@ -2,6 +2,8 @@ package com.czequered.promocodes.repository;
 
 import com.czequered.promocodes.LocalDynamoDBCreationRule;
 import com.czequered.promocodes.model.User;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +27,16 @@ public class UserRepositoryTest {
 
     @ClassRule
     public static final LocalDynamoDBCreationRule dynamoDBProvider = new LocalDynamoDBCreationRule();
+
+    @Before
+    public void before() {
+        dynamoDBProvider.createTable(User.class);
+    }
+
+    @After
+    public void after() {
+        dynamoDBProvider.deleteTable(User.class);
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void findAllTest() {

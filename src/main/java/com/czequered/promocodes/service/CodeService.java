@@ -11,4 +11,5 @@ public interface CodeService {
 
     Page<Code> getCodes(int page);
 
+    Code getCode(String game, String code);
 }
