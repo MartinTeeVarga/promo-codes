@@ -52,7 +52,6 @@ public class GameRepositoryTest {
         Game game = new Game();
         game.setUserId("krtek");
         game.setGameId("game");
-        game.setCodes(15);
         game.setDetails("{}");
         repository.save(game);
 

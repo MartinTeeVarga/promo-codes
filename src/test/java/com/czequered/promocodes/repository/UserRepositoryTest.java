@@ -46,7 +46,6 @@ public class UserRepositoryTest {
     public void findAllPageableTest() {
         User user = new User();
         user.setId("krtek");
-        user.setGames(15);
         user.setDetails("{}");
         repository.save(user);
 
