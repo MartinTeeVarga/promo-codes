@@ -46,8 +46,8 @@ public class CodeRepositoryTest {
     public void findAllPageableTest() {
         for (int i = 0; i < 4; i++) {
             Code code = new Code();
-            code.setGame("test");
-            code.setCode("PUB" + i);
+            code.setGameId("test");
+            code.setCodeId("PUB" + i);
             repository.save(code);
         }
         Page<Code> all = repository.findAll(new PageRequest(0, 3));
@@ -60,29 +60,48 @@ public class CodeRepositoryTest {
     public void findAllPageNotFoundTest() {
         for (int i = 0; i < 3; i++) {
             Code code = new Code();
-            code.setGame("test");
-            code.setCode("PUB" + i);
+            code.setGameId("test");
+            code.setCodeId("PUB" + i);
             repository.save(code);
         }
         Page<Code> all = repository.findAll(new PageRequest(1, 3));
-        all.forEach(c -> System.out.println("c.getCode() = " + c.getCode()));
+        all.forEach(c -> System.out.println("c.getCodeId() = " + c.getCodeId()));
         assertThat(all.getTotalElements()).isEqualTo(3);
         assertThat(all.getTotalPages()).isEqualTo(1);
         assertThat(all.getContent()).hasSize(0);
     }
 
     @Test
-    public void saveAndFindByGameAndCodeTest() {
+    public void findByGameAndCodeTest() {
         Code code = new Code();
-        code.setGame("test");
-        code.setCode("PUB1");
+        code.setGameId("test");
+        code.setCodeId("PUB1");
         code.setFrom("2012-01-27T03:47:26+00:00");
         code.setTo("2037-01-27T03:47:26+00:00");
         code.setPub(true);
         code.setPayload("Hello World");
         repository.save(code);
 
-        Code retrieved = repository.findByGameAndCode("test", "PUB1");
+        Code retrieved = repository.findByGameIdAndCodeId("test", "PUB1");
         assertThat(retrieved).isEqualTo(code);
+    }
+
+    @Test
+    public void findByGameTest() {
+        Code game1Code = new Code();
+        game1Code.setGameId("game1");
+        game1Code.setCodeId("PUB1");
+        repository.save(game1Code);
+
+        Code game2Code = new Code();
+        game2Code.setGameId("game2");
+        game2Code.setCodeId("PUB1");
+        repository.save(game2Code);
+
+        Page<Code> retrieved1 = repository.findByGameId("game1", new PageRequest(0, 2));
+        assertThat(retrieved1).containsExactly(game1Code);
+
+        Page<Code> retrieved2 = repository.findByGameId("game2", new PageRequest(0, 2));
+        assertThat(retrieved2).containsExactly(game2Code);
     }
 }

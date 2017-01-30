@@ -2,27 +2,41 @@ package com.czequered.promocodes.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import org.springframework.data.annotation.Id;
 
 /**
  * @author Martin Varga
- * TODO this needs to have an indexed user field
  */
 @DynamoDBTable(tableName = "Game")
 public class Game {
-    private String id;
-    private String details;
-    private int codes;
-
     @Id
-    @DynamoDBHashKey
-    public String getId() {
-        return id;
+    private GameCompositeId gameCompositeId;
+    private String details;
+
+    @DynamoDBHashKey(attributeName = "game")
+    public String getGameId() {
+        return gameCompositeId != null ? gameCompositeId.getGameId() : null;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setGameId(String gameId) {
+        if (gameCompositeId == null) {
+            gameCompositeId = new GameCompositeId();
+        }
+        this.gameCompositeId.setGameId(gameId);
+    }
+
+    @DynamoDBRangeKey(attributeName = "code")
+    public String getUserId() {
+        return gameCompositeId != null ? gameCompositeId.getUserId() : null;
+    }
+
+    public void setUserId(String userId) {
+        if (gameCompositeId == null) {
+            gameCompositeId = new GameCompositeId();
+        }
+        this.gameCompositeId.setUserId(userId);
     }
 
     @DynamoDBAttribute
@@ -34,28 +48,16 @@ public class Game {
         this.details = details;
     }
 
-    @DynamoDBAttribute
-    public int getCodes() {
-        return codes;
-    }
-
-    public void setCodes(int codes) {
-        this.codes = codes;
-    }
-
-    @Override
-    public boolean equals(Object o) {
+    @Override public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Game)) return false;
 
         Game game = (Game) o;
 
-        return id.equals(game.id);
-
+        return gameCompositeId.equals(game.gameCompositeId);
     }
 
-    @Override
-    public int hashCode() {
-        return id.hashCode();
+    @Override public int hashCode() {
+        return gameCompositeId.hashCode();
     }
 }

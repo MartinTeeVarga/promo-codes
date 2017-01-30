@@ -12,34 +12,34 @@ import org.springframework.data.annotation.Id;
 @DynamoDBTable(tableName = "Code")
 public class Code {
     @Id
-    private CodeId codeId;
+    private CodeCompositeId codeCompositeId;
     private String from;
     private String to;
     private Boolean pub;
     private String payload;
 
     @DynamoDBHashKey(attributeName = "game")
-    public String getGame() {
-        return codeId != null ? codeId.getGame() : null;
+    public String getGameId() {
+        return codeCompositeId != null ? codeCompositeId.getGameId() : null;
     }
 
-    public void setGame(String game) {
-        if (codeId == null) {
-            codeId = new CodeId();
+    public void setGameId(String gameId) {
+        if (codeCompositeId == null) {
+            codeCompositeId = new CodeCompositeId();
         }
-        this.codeId.setGame(game);
+        this.codeCompositeId.setGameId(gameId);
     }
 
     @DynamoDBRangeKey(attributeName = "code")
-    public String getCode() {
-        return codeId != null ? codeId.getCode() : null;
+    public String getCodeId() {
+        return codeCompositeId != null ? codeCompositeId.getCodeId() : null;
     }
 
-    public void setCode(String code) {
-        if (codeId == null) {
-            codeId = new CodeId();
+    public void setCodeId(String codeId) {
+        if (codeCompositeId == null) {
+            codeCompositeId = new CodeCompositeId();
         }
-        this.codeId.setCode(code);
+        this.codeCompositeId.setCodeId(codeId);
 
     }
 
@@ -86,12 +86,12 @@ public class Code {
 
         Code code = (Code) o;
 
-        return codeId.equals(code.codeId);
+        return codeCompositeId.equals(code.codeCompositeId);
 
     }
 
     @Override
     public int hashCode() {
-        return codeId.hashCode();
+        return codeCompositeId.hashCode();
     }
 }

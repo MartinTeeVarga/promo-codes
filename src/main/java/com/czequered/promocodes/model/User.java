@@ -13,7 +13,6 @@ import org.springframework.data.annotation.Id;
 public class User {
     private String id;
     private String details;
-    private int games;
 
     @Id
     @DynamoDBHashKey
@@ -32,15 +31,6 @@ public class User {
 
     public void setDetails(String details) {
         this.details = details;
-    }
-
-    @DynamoDBAttribute
-    public int getGames() {
-        return games;
-    }
-
-    public void setGames(int games) {
-        this.games = games;
     }
 
     @Override

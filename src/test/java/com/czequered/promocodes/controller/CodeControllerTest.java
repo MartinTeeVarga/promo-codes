@@ -51,8 +51,8 @@ public class CodeControllerTest {
     @Test
     public void listTest() throws Exception {
         Code code = new Code();
-        code.setGame("test");
-        code.setCode("PUB1");
+        code.setGameId("test");
+        code.setCodeId("PUB1");
         when(service.getCodes(0)).thenReturn(new PageImpl<>(Collections.singletonList(code)));
         MvcResult result = mockMvc.perform(get("/v1/games/test/codes/list"))
                 .andExpect(status().isOk())
@@ -64,8 +64,8 @@ public class CodeControllerTest {
     @Test
     public void listPageDoesNotExist() throws Exception {
         Code code = new Code();
-        code.setGame("test");
-        code.setCode("PUB1");
+        code.setGameId("test");
+        code.setCodeId("PUB1");
         when(service.getCodes(1)).thenReturn(new PageImpl<>(Collections.emptyList()));
         mockMvc.perform(get("/v1/games/test/codes/list?page=1"))
                 .andExpect(status().isOk())
@@ -76,8 +76,8 @@ public class CodeControllerTest {
     @Test
     public void listPageTwo() throws Exception {
         Code code = new Code();
-        code.setGame("test");
-        code.setCode("PUB21");
+        code.setGameId("test");
+        code.setCodeId("PUB21");
         when(service.getCodes(1)).thenReturn(new PageImpl<>(Collections.singletonList(code)));
         MvcResult result = mockMvc.perform(get("/v1/games/test/codes/list?page=1"))
                 .andExpect(status().isOk())
@@ -89,8 +89,8 @@ public class CodeControllerTest {
     @Test
     public void getCodeTest() throws Exception {
         Code code = new Code();
-        code.setGame("test");
-        code.setCode("PUB1");
+        code.setGameId("test");
+        code.setCodeId("PUB1");
         code.setPayload("Hello");
         when(service.getCode(eq("test"), eq("PUB1"))).thenReturn(code);
         mockMvc.perform(get("/v1/games/test/codes/PUB1"))
@@ -102,8 +102,8 @@ public class CodeControllerTest {
     @Test
     public void getCodeNotFoundTest() throws Exception {
         Code code = new Code();
-        code.setGame("test");
-        code.setCode("PUB2");
+        code.setGameId("test");
+        code.setCodeId("PUB2");
         code.setPayload("Hello");
         when(service.getCode(eq("test"), eq("PUB1"))).thenReturn(null);
         mockMvc.perform(get("/v1/games/test/codes/PUB1"))

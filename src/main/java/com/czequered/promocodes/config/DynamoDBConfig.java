@@ -23,7 +23,7 @@ public class DynamoDBConfig {
     @Value("${amazon.aws.accesskey:access}")
     private String accessKey;
 
-    @Value("${amazon.aws.secretkey:default}")
+    @Value("${amazon.aws.secretkey:secret}")
     private String secretKey;
 
     @Value("${amazon.aws.region}")

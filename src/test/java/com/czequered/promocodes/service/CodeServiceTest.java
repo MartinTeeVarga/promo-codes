@@ -37,8 +37,8 @@ public class CodeServiceTest {
     @Test
     public void getCodesTest() throws Exception {
         Code code = new Code();
-        code.setGame("test");
-        code.setCode("PUB1");
+        code.setGameId("test");
+        code.setCodeId("PUB1");
         when(codeRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.singletonList(code)));
         Page<Code> codes = service.getCodes(0);
         assertThat(codes).containsExactly(code);
@@ -47,10 +47,10 @@ public class CodeServiceTest {
     @Test
     public void getCodeTest() {
         Code code = new Code();
-        code.setGame("test");
-        code.setCode("PUB1");
+        code.setGameId("test");
+        code.setCodeId("PUB1");
         code.setPayload("Hello");
-        when(codeRepository.findByGameAndCode(eq("test"), eq("PUB1"))).thenReturn(code);
+        when(codeRepository.findByGameIdAndCodeId(eq("test"), eq("PUB1"))).thenReturn(code);
         Code retrieved = service.getCode("test", "PUB1");
         assertThat(retrieved.getPayload()).isEqualTo("Hello");
     }

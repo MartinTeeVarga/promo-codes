@@ -12,6 +12,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  */
 public interface GameRepository extends PagingAndSortingRepository<Game, String> {
 
+    Game findByGameId(String gameId);
+
     @EnableScan
     @EnableScanCount
     Page<Game> findAll(Pageable pageable);

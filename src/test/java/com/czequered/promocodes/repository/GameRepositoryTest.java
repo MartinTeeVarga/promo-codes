@@ -43,9 +43,15 @@ public class GameRepositoryTest {
     }
 
     @Test
+    public void findByGameIdTest() {
+
+    }
+
+    @Test
     public void findAllPageableTest() {
         Game game = new Game();
-        game.setId("test");
+        game.setUserId("krtek");
+        game.setGameId("game");
         game.setCodes(15);
         game.setDetails("{}");
         repository.save(game);

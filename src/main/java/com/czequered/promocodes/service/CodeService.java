@@ -12,4 +12,8 @@ public interface CodeService {
     Page<Code> getCodes(int page);
 
     Code getCode(String game, String code);
+
+    void deleteCode(String game, String code);
+
+    void saveCode(Code code);
 }
