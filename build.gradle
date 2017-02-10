@@ -54,6 +54,16 @@ test {
     }
 }
 
+bootRun {
+    systemProperty "spring.profiles.active", "prod"
+}
+
+task dev(type: org.springframework.boot.gradle.run.BootRunTask) {
+    main = "com.czequered.promocodes.PromoCodesApp"
+    classpath = sourceSets.main.runtimeClasspath
+    systemProperty "spring.profiles.active", "dev"
+}
+
 jacocoTestReport {
     reports {
         xml.enabled true
