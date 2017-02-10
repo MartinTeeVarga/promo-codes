@@ -3,12 +3,13 @@ package com.czequered.promocodes.model;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 
 /**
  * @author Martin Varga
  */
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 @DynamoDBTable(tableName = "User")
 public class User {
     private String id;
