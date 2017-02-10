@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 public interface CodeService {
     int PAGE_LIMIT = 20;
 
-    Page<Code> getCodes(int page);
+    Page<Code> getCodes(String game, int page);
 
     Code getCode(String game, String code);
 

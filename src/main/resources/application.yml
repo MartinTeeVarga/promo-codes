@@ -1,2 +1,6 @@
 aws:
   region: ap-southeast-2
+spring:
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true

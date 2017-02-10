@@ -35,9 +35,9 @@ public class CodeController {
     @RequestMapping(value = "/list",
             method = GET,
             produces = APPLICATION_JSON_VALUE)
-    public HttpEntity<PagedResources<CodeResource>> list(@RequestParam(value = "page", required = false) Integer pageNumber) {
+    public HttpEntity<PagedResources<CodeResource>> list(@PathVariable("gameId") String game, @RequestParam(value = "page", required = false) Integer pageNumber) {
         Integer actualPageNumber = pageNumber == null ? 0 : pageNumber;
-        Page<Code> codes = service.getCodes(actualPageNumber);
+        Page<Code> codes = service.getCodes(game, actualPageNumber);
 
         List<CodeResource> codeResources = assembler.toResources(codes.getContent());
         PagedResources.PageMetadata pageMetadata = new PagedResources.PageMetadata(codes.getNumberOfElements(), codes.getNumber(), codes.getTotalElements(), codes.getTotalPages());

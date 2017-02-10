@@ -53,7 +53,7 @@ public class CodeControllerTest {
         Code code = new Code();
         code.setGameId("test");
         code.setCodeId("PUB1");
-        when(service.getCodes(0)).thenReturn(new PageImpl<>(Collections.singletonList(code)));
+        when(service.getCodes("test", 0)).thenReturn(new PageImpl<>(Collections.singletonList(code)));
         MvcResult result = mockMvc.perform(get("/v1/games/test/codes/list"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -66,7 +66,7 @@ public class CodeControllerTest {
         Code code = new Code();
         code.setGameId("test");
         code.setCodeId("PUB1");
-        when(service.getCodes(1)).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(service.getCodes("test", 1)).thenReturn(new PageImpl<>(Collections.emptyList()));
         mockMvc.perform(get("/v1/games/test/codes/list?page=1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded").doesNotExist())
@@ -78,7 +78,7 @@ public class CodeControllerTest {
         Code code = new Code();
         code.setGameId("test");
         code.setCodeId("PUB21");
-        when(service.getCodes(1)).thenReturn(new PageImpl<>(Collections.singletonList(code)));
+        when(service.getCodes("test", 1)).thenReturn(new PageImpl<>(Collections.singletonList(code)));
         MvcResult result = mockMvc.perform(get("/v1/games/test/codes/list?page=1"))
                 .andExpect(status().isOk())
                 .andReturn();

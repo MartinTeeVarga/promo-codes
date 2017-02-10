@@ -1,6 +1,7 @@
 package com.czequered.promocodes.controller;
 
 import com.czequered.promocodes.model.Code;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +16,9 @@ public class CodesResourceAssembler extends ResourceAssemblerSupport<Code, CodeR
     }
 
     @Override
-    public CodeResource toResource(Code codes) {
-        CodeResource resource = new CodeResource(codes);
+    public CodeResource toResource(Code code) {
+        CodeResource resource = new CodeResource(code);
+        resource.add(new Link("/v1/games/" + code.getGameId() + "/codes/" + code.getCodeId()));
         return resource;
     }
 }

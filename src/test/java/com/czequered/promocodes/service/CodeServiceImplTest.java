@@ -40,8 +40,8 @@ public class CodeServiceImplTest {
         Code code = new Code();
         code.setGameId("test");
         code.setCodeId("PUB1");
-        when(codeRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.singletonList(code)));
-        Page<Code> codes = service.getCodes(0);
+        when(codeRepository.findByGameId(eq("test"), any(Pageable.class))).thenReturn(new PageImpl<>(Collections.singletonList(code)));
+        Page<Code> codes = service.getCodes("test", 0);
         assertThat(codes).containsExactly(code);
     }
 
