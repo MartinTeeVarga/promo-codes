@@ -71,7 +71,6 @@ public class CodeRepositoryTest {
             repository.save(code);
         }
         Page<Code> all = repository.findByGameId("test", new PageRequest(1, 3));
-        all.forEach(c -> System.out.println("c.getCodeId() = " + c.getCodeId()));
         assertThat(all.getTotalElements()).isEqualTo(3);
         assertThat(all.getTotalPages()).isEqualTo(1);
         assertThat(all.getContent()).hasSize(0);
