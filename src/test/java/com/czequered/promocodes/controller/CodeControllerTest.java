@@ -54,7 +54,7 @@ public class CodeControllerTest {
         code.setGameId("test");
         code.setCodeId("PUB1");
         when(service.getCodes("test", 0)).thenReturn(new PageImpl<>(Collections.singletonList(code)));
-        MvcResult result = mockMvc.perform(get("/v1/games/test/codes/list"))
+        MvcResult result = mockMvc.perform(get("/api/v1/games/test/codes/list"))
                 .andExpect(status().isOk())
                 .andReturn();
         Code[] codes = extractCodes(result);
@@ -67,7 +67,7 @@ public class CodeControllerTest {
         code.setGameId("test");
         code.setCodeId("PUB1");
         when(service.getCodes("test", 1)).thenReturn(new PageImpl<>(Collections.emptyList()));
-        mockMvc.perform(get("/v1/games/test/codes/list?page=1"))
+        mockMvc.perform(get("/api/v1/games/test/codes/list?page=1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded").doesNotExist())
                 .andExpect(jsonPath("$.page").exists());
@@ -79,7 +79,7 @@ public class CodeControllerTest {
         code.setGameId("test");
         code.setCodeId("PUB21");
         when(service.getCodes("test", 1)).thenReturn(new PageImpl<>(Collections.singletonList(code)));
-        MvcResult result = mockMvc.perform(get("/v1/games/test/codes/list?page=1"))
+        MvcResult result = mockMvc.perform(get("/api/v1/games/test/codes/list?page=1"))
                 .andExpect(status().isOk())
                 .andReturn();
         Code[] codes = extractCodes(result);
@@ -93,7 +93,7 @@ public class CodeControllerTest {
         code.setCodeId("PUB1");
         code.setPayload("Hello");
         when(service.getCode(eq("test"), eq("PUB1"))).thenReturn(code);
-        mockMvc.perform(get("/v1/games/test/codes/PUB1"))
+        mockMvc.perform(get("/api/v1/games/test/codes/PUB1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payload").value("Hello"))
                 .andReturn();
@@ -106,7 +106,7 @@ public class CodeControllerTest {
         code.setCodeId("PUB2");
         code.setPayload("Hello");
         when(service.getCode(eq("test"), eq("PUB1"))).thenReturn(null);
-        mockMvc.perform(get("/v1/games/test/codes/PUB1"))
+        mockMvc.perform(get("/api/v1/games/test/codes/PUB1"))
                 .andExpect(status().isNotFound())
                 .andReturn();
     }

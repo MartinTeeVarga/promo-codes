@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class WebMvcConfig {
 
-    @Value("${cors.url}")
+    @Value("${cors.url:none}")
     private String corsUrl;
 
     @Bean
@@ -21,8 +21,10 @@ public class WebMvcConfig {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:8090");
+                if (!"none".equals(corsUrl)) {
+                    registry.addMapping("/api/**")
+                            .allowedOrigins(corsUrl);
+                }
             }
         };
     }

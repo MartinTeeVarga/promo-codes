@@ -18,7 +18,7 @@ public class CodesResourceAssembler extends ResourceAssemblerSupport<Code, CodeR
     @Override
     public CodeResource toResource(Code code) {
         CodeResource resource = new CodeResource(code);
-        resource.add(new Link("/v1/games/" + code.getGameId() + "/codes/" + code.getCodeId()));
+        resource.add(new Link("/api/v1/games/" + code.getGameId() + "/codes/" + code.getCodeId()));
         return resource;
     }
 }
