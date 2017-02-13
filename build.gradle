@@ -31,7 +31,6 @@ dependencies {
     compile 'com.amazonaws:aws-java-sdk-core:1.11.86'
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework.boot:spring-boot-starter-hateoas'
     compile 'com.github.derjust:spring-data-dynamodb:4.4.1'
 
     testCompile 'org.mockito:mockito-core:1.10.19'

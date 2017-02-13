@@ -7,12 +7,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
@@ -40,8 +38,8 @@ public class CodeServiceImplTest {
         Code code = new Code();
         code.setGameId("test");
         code.setCodeId("PUB1");
-        when(codeRepository.findByGameId(eq("test"), any(Pageable.class))).thenReturn(new PageImpl<>(Collections.singletonList(code)));
-        Page<Code> codes = service.getCodes("test", 0);
+        when(codeRepository.findByGameId(eq("test"))).thenReturn(Collections.singletonList(code));
+        List<Code> codes = service.getCodes("test");
         assertThat(codes).containsExactly(code);
     }
 

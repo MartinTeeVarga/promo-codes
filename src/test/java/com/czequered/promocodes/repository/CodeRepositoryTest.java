@@ -9,9 +9,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,25 +56,10 @@ public class CodeRepositoryTest {
             otherCode.setCodeId("PRV" + i);
             repository.save(otherCode);
         }
-        Page<Code> all = repository.findByGameId("test", new PageRequest(0, 3));
-        assertThat(all.getTotalElements()).isEqualTo(4);
-        assertThat(all.getTotalPages()).isEqualTo(2);
-        assertThat(all.getContent()).hasSize(3);
+        List<Code> all = repository.findByGameId("test");
+        assertThat(all).hasSize(4);
     }
 
-    @Test
-    public void findAllByGameIdPageNotFound() {
-        for (int i = 0; i < 3; i++) {
-            Code code = new Code();
-            code.setGameId("test");
-            code.setCodeId("PUB" + i);
-            repository.save(code);
-        }
-        Page<Code> all = repository.findByGameId("test", new PageRequest(1, 3));
-        assertThat(all.getTotalElements()).isEqualTo(3);
-        assertThat(all.getTotalPages()).isEqualTo(1);
-        assertThat(all.getContent()).hasSize(0);
-    }
 
     @Test
     public void findByGameAndCode() {
@@ -103,11 +88,11 @@ public class CodeRepositoryTest {
         game2Code.setCodeId("PUB1");
         repository.save(game2Code);
 
-        Page<Code> retrieved1 = repository.findByGameId("game1", new PageRequest(0, 2));
-        assertThat(retrieved1).containsExactly(game1Code);
+        List<Code> codes1 = repository.findByGameId("game1");
+        assertThat(codes1).containsExactly(game1Code);
 
-        Page<Code> retrieved2 = repository.findByGameId("game2", new PageRequest(0, 2));
-        assertThat(retrieved2).containsExactly(game2Code);
+        List<Code> codes2 = repository.findByGameId("game2");
+        assertThat(codes2).containsExactly(game2Code);
     }
 
     @Test

@@ -1,15 +1,14 @@
 package com.czequered.promocodes.service;
 
 import com.czequered.promocodes.model.Code;
-import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 /**
  * @author Martin Varga
  */
 public interface CodeService {
-    int PAGE_LIMIT = 20;
-
-    Page<Code> getCodes(String game, int page);
+    List<Code> getCodes(String game);
 
     Code getCode(String game, String code);
 
