@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -53,7 +52,7 @@ public class CodeControllerTest {
         Code code = new Code();
         code.setGameId("test");
         code.setCodeId("PUB1");
-        when(service.getCodes("test", 0)).thenReturn(new PageImpl<>(Collections.singletonList(code)));
+        when(service.getCodes("test")).thenReturn(Collections.singletonList(code));
         MvcResult result = mockMvc.perform(get("/api/v1/games/test/codes/list"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -61,30 +60,6 @@ public class CodeControllerTest {
         assertThat(codes).containsExactly(code);
     }
 
-    @Test
-    public void listPageDoesNotExist() throws Exception {
-        Code code = new Code();
-        code.setGameId("test");
-        code.setCodeId("PUB1");
-        when(service.getCodes("test", 1)).thenReturn(new PageImpl<>(Collections.emptyList()));
-        mockMvc.perform(get("/api/v1/games/test/codes/list?page=1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$._embedded").doesNotExist())
-                .andExpect(jsonPath("$.page").exists());
-    }
-
-    @Test
-    public void listPageTwo() throws Exception {
-        Code code = new Code();
-        code.setGameId("test");
-        code.setCodeId("PUB21");
-        when(service.getCodes("test", 1)).thenReturn(new PageImpl<>(Collections.singletonList(code)));
-        MvcResult result = mockMvc.perform(get("/api/v1/games/test/codes/list?page=1"))
-                .andExpect(status().isOk())
-                .andReturn();
-        Code[] codes = extractCodes(result);
-        assertThat(codes).containsExactly(code);
-    }
 
     @Test
     public void getCode() throws Exception {
@@ -115,7 +90,6 @@ public class CodeControllerTest {
         String contentAsString = result.getResponse().getContentAsString();
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(contentAsString);
-        JsonNode listNode = root.at("/_embedded/codeList");
-        return mapper.treeToValue(listNode, Code[].class);
+        return mapper.treeToValue(root, Code[].class);
     }
 }
