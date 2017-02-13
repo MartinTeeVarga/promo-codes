@@ -4,3 +4,8 @@ aws:
 
 cors:
   url: http://localhost:8090
+
+server:
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain

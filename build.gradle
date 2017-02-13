@@ -42,7 +42,11 @@ dependencies {
 
 test {
     jacoco {
-        excludes = ["com.czequered.promocodes.config.*"]
+        excludes = [
+                "com.czequered.promocodes.config.*",
+                "com.czequered.promocodes.config.*Dev",
+                "com.czequered.promocodes.PromoCodesApp"
+        ]
     }
     testLogging {
         showStandardStreams = true
@@ -60,7 +64,7 @@ bootRun {
     systemProperty "spring.profiles.active", "prod"
 }
 
-task dev(type: org.springframework.boot.gradle.run.BootRunTask) {
+task bootRunDev(type: org.springframework.boot.gradle.run.BootRunTask, group: "application") {
     main = "com.czequered.promocodes.PromoCodesApp"
     classpath = sourceSets.main.runtimeClasspath
     systemProperty "spring.profiles.active", "dev"
@@ -69,7 +73,9 @@ task dev(type: org.springframework.boot.gradle.run.BootRunTask) {
 jacocoTestReport {
     afterEvaluate {
         classDirectories = files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: 'com/czequered/promocodes/config/**')
+            fileTree(it).matching {
+                exclude 'com/czequered/promocodes/config/**', 'com/czequered/promocodes/**/*Dev.*', 'com/czequered/promocodes/PromoCodesApp.*'
+            }
         })
     }
     reports {
