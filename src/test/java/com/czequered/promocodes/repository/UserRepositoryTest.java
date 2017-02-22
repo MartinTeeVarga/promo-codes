@@ -8,11 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Martin Varga
@@ -37,19 +33,8 @@ public class UserRepositoryTest {
         dynamoDBProvider.deleteTable(User.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void findAllTest() {
-        repository.findAll();
-    }
-
     @Test
-    public void findAllPageable() {
-        User user = new User();
-        user.setId("krtek");
-        user.setDetails("{}");
-        repository.save(user);
+    public void todoTest() {
 
-        Page<User> all = repository.findAll(new PageRequest(0, 1));
-        assertThat(all).containsExactly(user);
     }
 }

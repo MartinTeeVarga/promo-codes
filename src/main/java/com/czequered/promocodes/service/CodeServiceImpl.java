@@ -1,7 +1,6 @@
 package com.czequered.promocodes.service;
 
 import com.czequered.promocodes.model.Code;
-import com.czequered.promocodes.model.CodeCompositeId;
 import com.czequered.promocodes.repository.CodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,10 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     public void deleteCode(String game, String code) {
-        codeRepository.delete(new CodeCompositeId(game, code));
+        Code toDelete = new Code();
+        toDelete.setGameId(game);
+        toDelete.setCodeId(code);
+        codeRepository.delete(toDelete);
     }
 
     @Override

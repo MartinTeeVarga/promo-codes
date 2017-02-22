@@ -30,7 +30,7 @@ public class GameTest {
         game1.setUserId("Joe");
         game1.setDetails("A");
 
-        GameCompositeId id = new GameCompositeId("Joe", "test");
+        Game id = new Game("Joe", "test");
         assertThat(game1.hashCode()).isEqualTo(id.hashCode());
     }
 }

@@ -5,7 +5,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.springframework.data.annotation.Id;
+
+import java.util.Objects;
 
 /**
  * @author Martin Varga
@@ -13,32 +14,34 @@ import org.springframework.data.annotation.Id;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @DynamoDBTable(tableName = "Game")
 public class Game {
-    @Id
-    private GameCompositeId gameCompositeId;
+    private String userId;
+    private String gameId;
     private String details;
 
-    @DynamoDBHashKey(attributeName = "game")
+    public Game() {
+    }
+
+    public Game(String userId, String gameId) {
+        this.userId = userId;
+        this.gameId = gameId;
+    }
+
+    @DynamoDBHashKey(attributeName = "gameId")
     public String getGameId() {
-        return gameCompositeId != null ? gameCompositeId.getGameId() : null;
+        return gameId;
     }
 
     public void setGameId(String gameId) {
-        if (gameCompositeId == null) {
-            gameCompositeId = new GameCompositeId();
-        }
-        this.gameCompositeId.setGameId(gameId);
+        this.gameId = gameId;
     }
 
-    @DynamoDBRangeKey(attributeName = "code")
+    @DynamoDBRangeKey(attributeName = "userId")
     public String getUserId() {
-        return gameCompositeId != null ? gameCompositeId.getUserId() : null;
+        return userId;
     }
 
     public void setUserId(String userId) {
-        if (gameCompositeId == null) {
-            gameCompositeId = new GameCompositeId();
-        }
-        this.gameCompositeId.setUserId(userId);
+        this.userId = userId;
     }
 
     @DynamoDBAttribute
@@ -56,10 +59,11 @@ public class Game {
 
         Game game = (Game) o;
 
-        return gameCompositeId.equals(game.gameCompositeId);
+        if (!userId.equals(game.userId)) return false;
+        return gameId.equals(game.gameId);
     }
 
     @Override public int hashCode() {
-        return gameCompositeId.hashCode();
+        return Objects.hash(userId, gameId);
     }
 }

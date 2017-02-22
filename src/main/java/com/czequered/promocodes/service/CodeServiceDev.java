@@ -1,7 +1,6 @@
 package com.czequered.promocodes.service;
 
 import com.czequered.promocodes.model.Code;
-import com.czequered.promocodes.model.CodeCompositeId;
 import com.czequered.promocodes.repository.CodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -23,8 +22,7 @@ import java.util.stream.Collectors;
 @Primary
 public class CodeServiceDev implements CodeService {
 
-    Map<CodeCompositeId, Code> localCache;
-
+    Map<Code, Code> localCache;
 
     @Autowired
     public CodeServiceDev(CodeRepository codeRepository) {
@@ -51,16 +49,16 @@ public class CodeServiceDev implements CodeService {
 
     @Override
     public Code getCode(String game, String code) {
-        return localCache.get(new CodeCompositeId(game, code));
+        return localCache.get(new Code(game, code));
     }
 
     @Override
     public void deleteCode(String game, String code) {
-        localCache.remove(new CodeCompositeId(game, code));
+        localCache.remove(new Code(game, code));
     }
 
     @Override
     public void saveCode(Code code) {
-        localCache.put(new CodeCompositeId(code.getGameId(), code.getCodeId()), code);
+        localCache.put(new Code(code.getGameId(), code.getCodeId()), code);
     }
 }

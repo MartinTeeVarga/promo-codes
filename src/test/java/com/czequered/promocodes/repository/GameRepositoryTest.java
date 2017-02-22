@@ -8,9 +8,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,25 +37,15 @@ public class GameRepositoryTest {
         dynamoDBProvider.deleteTable(Game.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void findAll() {
-        repository.findAll();
-    }
-
     @Test
-    public void findByGameId() {
-
-    }
-
-    @Test
-    public void findAllPageable() {
+    public void findByUserId() {
         Game game = new Game();
         game.setUserId("krtek");
         game.setGameId("game");
         game.setDetails("{}");
         repository.save(game);
 
-        Page<Game> all = repository.findAll(new PageRequest(0, 1));
+        List<Game> all = repository.findByUserId("krtek");
         assertThat(all).containsExactly(game);
     }
 }

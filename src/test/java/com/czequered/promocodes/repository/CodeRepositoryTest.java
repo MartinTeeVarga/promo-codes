@@ -1,7 +1,6 @@
 package com.czequered.promocodes.repository;
 
 import com.czequered.promocodes.model.Code;
-import com.czequered.promocodes.model.CodeCompositeId;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -38,11 +37,6 @@ public class CodeRepositoryTest {
         dynamoDBProvider.deleteTable(Code.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void findAllTest() {
-        repository.findAll();
-    }
-
     @Test
     public void findAllByGameId() {
         for (int i = 0; i < 4; i++) {
@@ -59,7 +53,6 @@ public class CodeRepositoryTest {
         List<Code> all = repository.findByGameId("test");
         assertThat(all).hasSize(4);
     }
-
 
     @Test
     public void findByGameAndCode() {
@@ -103,7 +96,7 @@ public class CodeRepositoryTest {
         repository.save(code);
         Code foundBefore = repository.findByGameIdAndCodeId("test", "PUB1");
         assertThat(foundBefore).isEqualTo(code);
-        repository.delete(new CodeCompositeId("test", "PUB1"));
+        repository.delete(new Code("test", "PUB1"));
         Code foundAfter = repository.findByGameIdAndCodeId("test", "PUB1");
         assertThat(foundAfter).isNull();
     }

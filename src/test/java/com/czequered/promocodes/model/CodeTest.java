@@ -30,7 +30,7 @@ public class CodeTest {
         code1.setCodeId("PUB1");
         code1.setPayload("A");
 
-        CodeCompositeId id = new CodeCompositeId("test", "PUB1");
+        Code id = new Code("test", "PUB1");
         assertThat(code1.hashCode()).isEqualTo(id.hashCode());
     }
 }

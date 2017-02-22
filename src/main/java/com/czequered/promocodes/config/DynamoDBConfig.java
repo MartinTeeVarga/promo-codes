@@ -5,7 +5,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
  * @author Martin Varga
  */
 @Configuration
-@EnableDynamoDBRepositories(basePackages = "com.czequered.promocodes.repository")
 public class DynamoDBConfig {
 
     @Value("${aws.dynamodb.endpoint:default}")
@@ -28,6 +28,8 @@ public class DynamoDBConfig {
 
     @Value("${aws.region}")
     private String region;
+
+    @Autowired private AmazonDynamoDB amazonDynamoDB;
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
@@ -43,4 +45,8 @@ public class DynamoDBConfig {
         return builder.build();
     }
 
+    @Bean
+    public DynamoDBMapper dynamoDBMapper() {
+        return new DynamoDBMapper(amazonDynamoDB);
+    }
 }

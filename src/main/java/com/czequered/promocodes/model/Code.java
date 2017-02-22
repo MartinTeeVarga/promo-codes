@@ -5,7 +5,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.springframework.data.annotation.Id;
+
+import java.util.Objects;
 
 /**
  * @author Martin Varga
@@ -13,36 +14,40 @@ import org.springframework.data.annotation.Id;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @DynamoDBTable(tableName = "Code")
 public class Code {
-    @Id
-    private CodeCompositeId codeCompositeId;
+    private String gameId;
+    private String codeId;
     private String from;
     private String to;
     private Boolean pub;
     private String payload;
 
-    @DynamoDBHashKey(attributeName = "game")
+    /**
+     * For mapper
+     */
+    public Code() {
+    }
+
+    public Code(String gameId, String codeId) {
+        this.gameId = gameId;
+        this.codeId = codeId;
+    }
+
+    @DynamoDBHashKey(attributeName = "gameId")
     public String getGameId() {
-        return codeCompositeId != null ? codeCompositeId.getGameId() : null;
+        return gameId;
     }
 
     public void setGameId(String gameId) {
-        if (codeCompositeId == null) {
-            codeCompositeId = new CodeCompositeId();
-        }
-        this.codeCompositeId.setGameId(gameId);
+        this.gameId = gameId;
     }
 
-    @DynamoDBRangeKey(attributeName = "code")
+    @DynamoDBRangeKey(attributeName = "codeId")
     public String getCodeId() {
-        return codeCompositeId != null ? codeCompositeId.getCodeId() : null;
+        return codeId;
     }
 
     public void setCodeId(String codeId) {
-        if (codeCompositeId == null) {
-            codeCompositeId = new CodeCompositeId();
-        }
-        this.codeCompositeId.setCodeId(codeId);
-
+        this.codeId = codeId;
     }
 
     @DynamoDBAttribute(attributeName = "from")
@@ -81,19 +86,17 @@ public class Code {
         this.payload = payload;
     }
 
-    @Override
-    public boolean equals(Object o) {
+    @Override public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Code)) return false;
 
         Code code = (Code) o;
 
-        return codeCompositeId.equals(code.codeCompositeId);
-
+        if (!gameId.equals(code.gameId)) return false;
+        return codeId.equals(code.codeId);
     }
 
-    @Override
-    public int hashCode() {
-        return codeCompositeId.hashCode();
+    @Override public int hashCode() {
+        return Objects.hash(gameId, codeId);
     }
 }

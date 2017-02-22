@@ -1,7 +1,6 @@
 package com.czequered.promocodes.service;
 
 import com.czequered.promocodes.model.Code;
-import com.czequered.promocodes.model.CodeCompositeId;
 import com.czequered.promocodes.repository.CodeRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +56,7 @@ public class CodeServiceImplTest {
     @Test
     public void deleteCode() throws Exception {
         service.deleteCode("test", "PUB1");
-        CodeCompositeId toDelete = new CodeCompositeId("test", "PUB1");
+        Code toDelete = new Code("test", "PUB1");
         verify(codeRepository).delete(eq(toDelete));
         verifyNoMoreInteractions(codeRepository);
     }
@@ -71,5 +70,4 @@ public class CodeServiceImplTest {
         verify(codeRepository).save(eq(code));
         verifyNoMoreInteractions(codeRepository);
     }
-
 }
