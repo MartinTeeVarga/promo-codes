@@ -1,8 +1,11 @@
 package com.czequered.promocodes.service;
 
+import com.czequered.promocodes.model.Game;
 import com.czequered.promocodes.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author Martin Varga
@@ -14,5 +17,21 @@ public class GameServiceImpl implements GameService {
     @Autowired
     public GameServiceImpl(GameRepository repository) {
         this.repository = repository;
+    }
+
+    @Override public List<Game> getGames(String userId) {
+        return null;
+    }
+
+    @Override public Game getGame(String userId, String gameId) {
+        return null;
+    }
+
+    @Override public void deleteGame(String user, String game) {
+
+    }
+
+    @Override public void saveCode(Game code) {
+
     }
 }
