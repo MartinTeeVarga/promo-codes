@@ -20,18 +20,19 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override public List<Game> getGames(String userId) {
-        return null;
+        return repository.findByUserId(userId);
     }
 
     @Override public Game getGame(String userId, String gameId) {
-        return null;
+        return repository.findByUserIdAndGameId(userId, gameId);
     }
 
     @Override public void deleteGame(String user, String game) {
-
+        repository.delete(new Game(user, game));
     }
 
-    @Override public void saveCode(Game code) {
-
+    @Override
+    public Game saveGame(Game game) {
+        return repository.save(game);
     }
 }

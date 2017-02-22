@@ -58,7 +58,9 @@ public class CodeServiceDev implements CodeService {
     }
 
     @Override
-    public void saveCode(Code code) {
-        localCache.put(new Code(code.getGameId(), code.getCodeId()), code);
+    public Code saveCode(Code code) {
+        Code key = new Code(code.getGameId(), code.getCodeId());
+        localCache.put(key, code);
+        return code;
     }
 }

@@ -4,9 +4,6 @@ import com.czequered.promocodes.model.Code;
 import com.czequered.promocodes.repository.CodeRepository;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,8 +15,6 @@ import static org.mockito.Mockito.*;
 /**
  * @author Martin Varga
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
 public class CodeServiceImplTest {
 
     private CodeService service;

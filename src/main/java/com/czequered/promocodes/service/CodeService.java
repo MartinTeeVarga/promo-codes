@@ -14,5 +14,5 @@ public interface CodeService {
 
     void deleteCode(String game, String code);
 
-    void saveCode(Code code);
+    Code saveCode(Code code);
 }

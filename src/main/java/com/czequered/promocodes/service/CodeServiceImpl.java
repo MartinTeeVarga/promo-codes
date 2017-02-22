@@ -38,7 +38,7 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Override
-    public void saveCode(Code code) {
-        codeRepository.save(code);
+    public Code saveCode(Code code) {
+        return codeRepository.save(code);
     }
 }

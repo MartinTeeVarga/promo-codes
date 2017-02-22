@@ -14,5 +14,5 @@ public interface GameService {
 
     void deleteGame(String user, String game);
 
-    void saveCode(Game code);
+    Game saveGame(Game game);
 }
