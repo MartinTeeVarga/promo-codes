@@ -30,6 +30,7 @@ public class GameRepositoryTest {
     @Before
     public void before() {
         dynamoDBProvider.createTable(Game.class);
+
     }
 
     @After
@@ -39,13 +40,37 @@ public class GameRepositoryTest {
 
     @Test
     public void findByUserId() {
-        Game game = new Game();
-        game.setUserId("krtek");
-        game.setGameId("game");
-        game.setDetails("{}");
-        repository.save(game);
+        saveGame("krtek", "game1");
+        saveGame("krtek", "game2");
+        saveGame("sova", "game3");
 
         List<Game> all = repository.findByUserId("krtek");
-        assertThat(all).containsExactly(game);
+        assertThat(all).containsOnly(new Game("krtek", "game1"), new Game("krtek", "game2"));
+    }
+
+    @Test
+    public void findByUserIdAndGameId() {
+        saveGame("krtek", "game1");
+        saveGame("krtek", "game2");
+        saveGame("sova", "game3");
+
+        repository.findByUserId("krtek").stream().forEach(g -> {
+            System.out.println("g.getUserId() = " + g.getUserId());
+            System.out.println("g.getGameId() = " + g.getGameId());
+        });
+
+        Game byUserIdAndGameId = repository.findByUserIdAndGameId("krtek", "game2");
+        System.out.println("byUserIdAndGameId.getUserId() = " + byUserIdAndGameId.getUserId());
+        System.out.println("byUserIdAndGameId.getGameId() = " + byUserIdAndGameId.getGameId());
+
+        assertThat(repository.findByUserIdAndGameId("krtek", "game2")).isEqualTo(new Game("krtek", "game2"));
+    }
+
+    private void saveGame(String userId, String gameId) {
+        Game game = new Game();
+        game.setUserId(userId);
+        game.setGameId(gameId);
+        game.setDetails("{}");
+        repository.save(game);
     }
 }

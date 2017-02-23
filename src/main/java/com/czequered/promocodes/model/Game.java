@@ -26,22 +26,22 @@ public class Game {
         this.gameId = gameId;
     }
 
-    @DynamoDBHashKey(attributeName = "gameId")
-    public String getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
-    }
-
-    @DynamoDBRangeKey(attributeName = "userId")
+    @DynamoDBHashKey(attributeName = "userId")
     public String getUserId() {
         return userId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    @DynamoDBRangeKey(attributeName = "gameId")
+    public String getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
     }
 
     @DynamoDBAttribute
