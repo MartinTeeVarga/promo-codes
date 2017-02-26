@@ -10,8 +10,11 @@ server:
     enabled: true
     mime-types: application/json,application/xml,text/html,text/xml,text/plain
 
-security:
-  oauth2:
-    client:
-      clientId: do-not-use-in-dev
-      clientSecret: do-not-use-in-dev
+facebook:
+  client:
+    clientId: do-not-use-in-dev
+    clientSecret: do-not-use-in-dev
+github:
+  client:
+    clientId: do-not-use-in-dev
+    clientSecret: do-not-use-in-dev
