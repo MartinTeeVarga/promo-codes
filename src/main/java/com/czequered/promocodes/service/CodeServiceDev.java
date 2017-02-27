@@ -42,9 +42,9 @@ public class CodeServiceDev implements CodeService {
     @Override
     public List<Code> getCodes(String game) {
         return localCache.keySet().stream()
-                .filter(k -> k.getGameId().equals(game))
-                .map(k -> localCache.get(k))
-                .collect(Collectors.toList());
+            .filter(k -> k.getGameId().equals(game))
+            .map(k -> localCache.get(k))
+            .collect(Collectors.toList());
     }
 
     @Override

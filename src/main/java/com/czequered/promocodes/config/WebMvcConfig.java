@@ -22,8 +22,8 @@ public class WebMvcConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 if (!"none".equals(corsUrl)) {
-                    registry.addMapping("/api/**")
-                            .allowedOrigins(corsUrl);
+                    //TODO proper setup
+                    registry.addMapping("/**").allowedOrigins(corsUrl);
                 }
             }
         };
