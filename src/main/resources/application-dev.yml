@@ -10,11 +10,12 @@ server:
     enabled: true
     mime-types: application/json,application/xml,text/html,text/xml,text/plain
 
+#facebook and github codes from the Spring tutorial
 facebook:
   client:
-    clientId: do-not-use-in-dev
-    clientSecret: do-not-use-in-dev
+    clientId: 233668646673605
+    clientSecret: 33b17e044ee6a4fa383f46ec6e28ea1d
 github:
   client:
-    clientId: do-not-use-in-dev
-    clientSecret: do-not-use-in-dev
+    clientId: bd1c0a783ccdd1c9b9e4
+    clientSecret: 1a9030fbca47a5b2c28e92f19050bb77824b5ad1
