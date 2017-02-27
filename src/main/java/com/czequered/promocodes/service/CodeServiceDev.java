@@ -27,7 +27,7 @@ public class CodeServiceDev implements CodeService {
     @Autowired
     public CodeServiceDev(CodeRepository codeRepository) {
         localCache = new HashMap<>();
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 75; i++) {
             Code code = new Code();
             code.setGameId("GAME0");
             code.setCodeId("CODE" + i);
