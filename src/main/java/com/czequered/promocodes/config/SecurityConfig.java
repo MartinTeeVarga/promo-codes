@@ -17,7 +17,6 @@ import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticat
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -34,13 +33,13 @@ import java.util.List;
 @EnableOAuth2Client
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    AuthStore store;
-
-    @Autowired
     OAuth2ClientContext oauth2ClientContext;
 
     @Autowired
-    UrlParameterAuthenticationHandler successHandler;
+    private EntryPointUnauthorizedHandler unauthorizedHandler;
+
+    @Autowired
+    SendTokenSuccessHandler successHandler;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -52,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and().exceptionHandling()
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/"))
+                .authenticationEntryPoint(unauthorizedHandler)
             .and().logout()
                 .logoutSuccessUrl("/").permitAll()
             .and().csrf()

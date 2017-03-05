@@ -39,7 +39,7 @@ public class DynamoDBConfig {
         if ("default".equals(dynamoDbEndpoint)) {
             builder = builder.withRegion(region);
         } else {
-            builder = builder.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("httpSecurity://localhost:8088", region));
+            builder = builder.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8088", region));
         }
 
         return builder.build();

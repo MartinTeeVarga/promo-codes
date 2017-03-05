@@ -2,3 +2,10 @@ aws:
   region: ap-southeast-2
   dynamodb:
     endpoint: http://localhost:8088
+jepice:
+  frontend:
+    url: http://localhost:8090
+  jwt:
+    secret: NotSoSecret!
+    header: X-JWT-Token
+    expiry: 3600000

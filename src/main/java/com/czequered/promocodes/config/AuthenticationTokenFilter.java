@@ -1,6 +1,7 @@
 package com.czequered.promocodes.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -18,14 +19,14 @@ import java.util.Collections;
 
 public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
 
-    //  @Value("${cerberus.token.header}")
+    @Value("${jepice.jwt.header}")
     private String tokenHeader = "X-Token";
 
     @Autowired
     private TokenUtils tokenUtils;
 
 //  @Autowired
-//  private UserDetailsService userDetailsService;
+//  private UserService userService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -35,9 +36,8 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
         String username = this.tokenUtils.getUsernameFromToken(authToken);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-//      UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            UserDetails userDetails = new User("Hello", "world", Collections.emptyList());
-            if (this.tokenUtils.validateToken(authToken, userDetails)) {
+            UserDetails userDetails = new User(username, "", Collections.emptyList());
+            if (this.tokenUtils.validateToken(authToken)) {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
