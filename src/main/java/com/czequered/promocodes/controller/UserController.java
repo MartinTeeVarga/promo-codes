@@ -20,4 +20,9 @@ public class UserController {
         return map;
     }
 
+    @RequestMapping("/hello")
+    public String hello(Principal principal) {
+        return principal.getName();
+    }
+
 }
