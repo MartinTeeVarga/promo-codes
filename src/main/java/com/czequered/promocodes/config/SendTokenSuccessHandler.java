@@ -1,5 +1,6 @@
 package com.czequered.promocodes.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -14,20 +15,27 @@ import java.io.IOException;
  * @author Martin Varga
  */
 @Component
-public class UrlParameterAuthenticationHandler extends SimpleUrlAuthenticationSuccessHandler {
-    @Value("${cors.url:none}")
+public class SendTokenSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+    @Value("${jepice.jwt.header}")
+    private String tokenHeader = "X-Token";
+
+    @Value("${jepice.frontend.url:none}")
     String corsUrl;
+
+    @Autowired
+    TokenUtils tokenUtils;
 
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        String targetUrl = determineTargetUrl(request, response);
-
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect.");
             return;
         }
+        String name = authentication.getName();
+        String token = tokenUtils.generateToken(name);
 
-        getRedirectStrategy().sendRedirect(request, response, corsUrl);
+        response.addHeader(tokenHeader, token);
+        getRedirectStrategy().sendRedirect(request, response, "http://localhost:8080");
     }
 
 }

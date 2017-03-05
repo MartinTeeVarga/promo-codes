@@ -32,6 +32,7 @@ dependencies {
 
     compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'io.jsonwebtoken:jjwt:0.6.0'
 
     compile "org.webjars:angularjs:1.4.3"
     compile "org.webjars:jquery:2.1.1"

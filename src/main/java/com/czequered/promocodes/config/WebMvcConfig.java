@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class WebMvcConfig {
 
-    @Value("${cors.url:none}")
+    @Value("${jepice.frontend.url:none}")
     private String corsUrl;
 
     @Bean
@@ -22,7 +22,6 @@ public class WebMvcConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 if (!"none".equals(corsUrl)) {
-                    //TODO proper setup
                     registry.addMapping("/**").allowedOrigins(corsUrl);
                 }
             }
