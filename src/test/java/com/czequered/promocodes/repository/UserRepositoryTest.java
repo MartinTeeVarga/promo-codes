@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
 /**
  * @author Martin Varga
  */
@@ -33,8 +35,17 @@ public class UserRepositoryTest {
         dynamoDBProvider.deleteTable(User.class);
     }
 
-    @Test
-    public void todoTest() {
 
+    @Test
+    public void findByUserId() {
+        User krtek = new User("Krtek");
+        krtek.setDetails("Mys");
+        User sova = new User("Sova");
+
+        repository.save(krtek);
+        repository.save(sova);
+
+        User krtekRetrieved = repository.findByUserId("Krtek");
+        assertThat(krtekRetrieved).isEqualToComparingFieldByField(krtek);
     }
 }

@@ -14,6 +14,16 @@ public class User {
     private String id;
     private String details;
 
+    /**
+     * required for dynamo mapper
+     */
+    public User() {
+    }
+
+    public User(String id) {
+        this.id = id;
+    }
+
     @DynamoDBHashKey
     public String getId() {
         return id;

@@ -8,5 +8,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserRepository extends AbstractDynamoDBRepository<User> {
-
+    public User findByUserId(String userId) {
+        return mapper.load(User.class, userId);
+    }
 }

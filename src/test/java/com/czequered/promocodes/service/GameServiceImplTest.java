@@ -28,7 +28,7 @@ public class GameServiceImplTest {
     }
 
     @Test
-    public void getGames() throws Exception {
+    public void getGames() {
         Game game1 = new Game("krtek", "game1");
         Game game2 = new Game("krtek", "game2");
         when(repository.findByUserId(eq("krtek"))).thenReturn(Arrays.asList(game1, game2));
@@ -45,13 +45,13 @@ public class GameServiceImplTest {
     }
 
     @Test
-    public void deleteGame() throws Exception {
+    public void deleteGame() {
         service.deleteGame("krtek", "game");
         verify(repository).delete(eq(new Game("krtek", "game")));
     }
 
     @Test
-    public void saveGame() throws Exception {
+    public void saveGame() {
         Game game = new Game("krtek", "game");
         when(repository.save(eq(game))).thenReturn(game);
         Game saved = service.saveGame(game);

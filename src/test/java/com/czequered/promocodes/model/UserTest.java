@@ -33,8 +33,7 @@ public class UserTest {
         fbUser.setId("facebook-123");
         fbUser.setDetails("hello");
 
-        User sameFbUser = new User();
-        sameFbUser.setId("facebook-123");
+        User sameFbUser = new User("facebook-123");
 
         assertThat(fbUser.hashCode()).isEqualTo(sameFbUser.hashCode());
     }

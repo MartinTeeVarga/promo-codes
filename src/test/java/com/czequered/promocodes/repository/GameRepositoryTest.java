@@ -30,7 +30,6 @@ public class GameRepositoryTest {
     @Before
     public void before() {
         dynamoDBProvider.createTable(Game.class);
-
     }
 
     @After
