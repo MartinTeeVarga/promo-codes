@@ -24,7 +24,7 @@ public class GameTest {
     }
 
     @Test
-    public void hashGameTest() throws Exception {
+    public void hashCodeTest() throws Exception {
         Game game1 = new Game();
         game1.setGameId("test");
         game1.setUserId("Joe");
