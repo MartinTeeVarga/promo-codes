@@ -6,7 +6,7 @@ import java.util.Date;
  * @author Martin Varga
  */
 public interface TokenService {
-    String getUsernameFromToken(String token) throws InvalidTokenException;
+    String getUserIdFromToken(String token) throws InvalidTokenException;
 
     String generateToken(String userName);
 

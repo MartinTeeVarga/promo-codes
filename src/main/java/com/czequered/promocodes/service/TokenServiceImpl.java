@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.time.Clock;
 import java.util.Date;
@@ -34,18 +35,22 @@ public class TokenServiceImpl implements TokenService {
         this.clock = clock;
     }
 
-    @Override public String getUsernameFromToken(String token) throws InvalidTokenException {
+    @Override public String getUserIdFromToken(String token) throws InvalidTokenException {
         try {
             final Claims claims = getClaimsFromToken(token);
-            return claims.getSubject();
+            String subject = claims.getSubject();
+            if (StringUtils.isEmpty(subject)) {
+                throw new IllegalArgumentException("UserId must be present.");
+            }
+            return subject;
         } catch (Exception e) {
-            throw new InvalidTokenException("Invalid username.", e);
+            throw new InvalidTokenException("Invalid userId.", e);
         }
     }
 
-    @Override public String generateToken(String userName) {
+    @Override public String generateToken(String userId) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put(SUBJECT, userName);
+        claims.put(SUBJECT, userId);
         claims.put(EXPIRATION, generateExpirationDate());
         return this.generateToken(claims);
     }
@@ -58,20 +63,12 @@ public class TokenServiceImpl implements TokenService {
         }
     }
 
-    private Claims getClaimsFromToken(String token) throws InvalidTokenException {
-        try {
-            return Jwts.parser()
-                    .setClock(() -> new Date(clock.millis()))
-                    .setSigningKey(secret)
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (Exception e) {
-            throw new InvalidTokenException("Cannot parse the token.", e);
-        }
-    }
-
-    private Date generateCurrentDate() {
-        return new Date(clock.millis());
+    private Claims getClaimsFromToken(String token) {
+        return Jwts.parser()
+                .setClock(() -> new Date(clock.millis()))
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     private Date generateExpirationDate() {

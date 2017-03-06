@@ -26,9 +26,15 @@ public class TokenServiceImplTest {
     }
 
     @Test
-    public void getUsernameFromTokenTest() throws Exception {
+    public void getUserIdFromTokenTest() throws Exception {
         String token = service.generateToken("Krtek");
-        assertThat(service.getUsernameFromToken(token)).isEqualTo("Krtek");
+        assertThat(service.getUserIdFromToken(token)).isEqualTo("Krtek");
+    }
+
+    @Test
+    public void emptyUserIdIsInvalid() throws Exception {
+        String token = service.generateToken("");
+        assertThatThrownBy(() -> service.getUserIdFromToken(token)).isInstanceOf(InvalidTokenException.class);
     }
 
     @Test
