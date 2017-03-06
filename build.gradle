@@ -53,6 +53,7 @@ test {
         excludes = [
                 "com.czequered.promocodes.config.*",
                 "com.czequered.promocodes.service.*Dev",
+                "com.czequered.promocodes.service.*Exception",
                 "com.czequered.promocodes.PromoCodesApp"
         ]
     }
@@ -82,7 +83,10 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories = files(classDirectories.files.collect {
             fileTree(it).matching {
-                exclude 'com/czequered/promocodes/config/**', 'com/czequered/promocodes/**/*Dev.*', 'com/czequered/promocodes/PromoCodesApp.*'
+                exclude 'com/czequered/promocodes/config/**',
+                        'com/czequered/promocodes/**/*Dev.*',
+                        'com/czequered/promocodes/**/*Exception.*',
+                        'com/czequered/promocodes/PromoCodesApp.*'
             }
         })
     }
