@@ -12,14 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.czequered.promocodes.config.Constants.TOKEN_HEADER;
+
 /**
  * @author Martin Varga
  */
 @Component
 public class SendTokenSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    @Value("${jepice.jwt.header}")
-    private String tokenHeader = "X-Token";
-
     @Value("${jepice.frontend.url:none}")
     String corsUrl;
 
@@ -35,7 +34,7 @@ public class SendTokenSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
         String name = authentication.getName();
         String token = tokenUtils.generateToken(name);
 
-        response.addHeader(tokenHeader, token);
+        response.addHeader(TOKEN_HEADER, token);
         getRedirectStrategy().sendRedirect(request, response, "http://localhost:8080");
     }
 

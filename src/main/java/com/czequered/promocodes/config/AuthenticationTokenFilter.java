@@ -5,7 +5,6 @@ import com.czequered.promocodes.service.TokenServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -26,16 +25,13 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
 
     protected final Log logger = LogFactory.getLog(this.getClass());
 
-    @Value("${jepice.jwt.header}")
-    private String tokenHeader = "X-Token";
-
     @Autowired
     private TokenServiceImpl tokenService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String authToken = httpRequest.getHeader(this.tokenHeader);
+        String authToken = httpRequest.getHeader(Constants.TOKEN_HEADER);
         try {
             String username = tokenService.getUserIdFromToken(authToken);
 
