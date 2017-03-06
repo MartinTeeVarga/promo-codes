@@ -1,5 +1,6 @@
 package com.czequered.promocodes.config;
 
+import com.czequered.promocodes.service.TokenServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -23,7 +24,7 @@ public class SendTokenSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
     String corsUrl;
 
     @Autowired
-    TokenUtils tokenUtils;
+    TokenServiceImpl tokenUtils;
 
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
