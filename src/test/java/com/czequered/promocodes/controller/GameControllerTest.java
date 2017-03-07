@@ -25,7 +25,8 @@ import java.util.Collections;
 import static com.czequered.promocodes.config.Constants.TOKEN_HEADER;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -78,6 +79,18 @@ public class GameControllerTest {
     }
 
     @Test
+    public void listInvalidTokenTest() throws Exception {
+        Game game = new Game("krtek", "auticko");
+        when(clock.millis()).thenReturn(10000000L);
+        when(gameService.getGames(eq("krtek"))).thenReturn(Collections.singletonList(game));
+        String token = tokenService.generateToken("krtek");
+        when(clock.millis()).thenReturn(10000000L + expiry + 1);
+        mockMvc.perform(get("/api/v1/games/list").header(TOKEN_HEADER, token))
+                .andExpect(status().isForbidden())
+                .andReturn();
+    }
+
+    @Test
     public void getGameNotFoundTest() throws Exception {
         when(gameService.getGame(eq("krtek"), eq("auticko"))).thenReturn(null);
         String token = tokenService.generateToken("krtek");
@@ -89,7 +102,6 @@ public class GameControllerTest {
     @Test
     public void getGameInvalidTokenTest() throws Exception {
         Game game = new Game("krtek", "auticko");
-        doReturn(10000000L).when(clock).millis();
         when(clock.millis()).thenReturn(10000000L);
         when(gameService.getGame(eq("krtek"), eq("auticko"))).thenReturn(game);
         String token = tokenService.generateToken("krtek");
