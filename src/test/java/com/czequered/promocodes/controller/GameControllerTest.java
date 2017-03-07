@@ -62,7 +62,6 @@ public class GameControllerTest {
     public void before() {
         mockMvc = webAppContextSetup(webApplicationContext).build();
         clock = mock(Clock.class);
-        System.out.println("clockService.getClass() = " + clockService.getClass());
         when(clockService.getClock()).thenReturn(clock);
     }
 
