@@ -22,7 +22,7 @@ public class TokenServiceImplTest {
     @Before
     public void before() {
         clock = mock(Clock.class);
-        service = new TokenServiceImpl(EXPIRATION, "secret", clock);
+        service = new TokenServiceImpl(EXPIRATION, "secret", () -> clock);
     }
 
     @Test

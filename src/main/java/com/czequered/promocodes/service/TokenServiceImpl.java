@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.time.Clock;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,15 +23,15 @@ import static io.jsonwebtoken.Claims.SUBJECT;
 public class TokenServiceImpl implements TokenService {
 
     private String secret;
+    private ClockService clockService;
     private Long expiration;
-    private Clock clock;
 
     @Autowired TokenServiceImpl(@Value("${jepice.jwt.expiry}") Long expiration,
                                 @Value("${jepice.jwt.secret}") String secret,
-                                Clock clock) {
+                                ClockService clockService) {
         this.expiration = expiration;
         this.secret = secret;
-        this.clock = clock;
+        this.clockService = clockService;
     }
 
     @Override public String getUserIdFromToken(String token) throws InvalidTokenException {
@@ -65,14 +64,14 @@ public class TokenServiceImpl implements TokenService {
 
     private Claims getClaimsFromToken(String token) {
         return Jwts.parser()
-                .setClock(() -> new Date(clock.millis()))
+                .setClock(() -> new Date(clockService.getClock().millis()))
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
     }
 
     private Date generateExpirationDate() {
-        return new Date(clock.millis() + expiration);
+        return new Date(clockService.getClock().millis() + expiration);
     }
 
     private String generateToken(Map<String, Object> claims) {

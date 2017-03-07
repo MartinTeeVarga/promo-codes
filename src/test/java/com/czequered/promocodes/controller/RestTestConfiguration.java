@@ -1,5 +1,6 @@
 package com.czequered.promocodes.controller;
 
+import com.czequered.promocodes.service.ClockService;
 import com.czequered.promocodes.service.CodeService;
 import com.czequered.promocodes.service.GameService;
 import com.czequered.promocodes.service.UserService;
@@ -32,5 +33,11 @@ public class RestTestConfiguration {
     @Primary
     public UserService userService() {
         return mock(UserService.class);
+    }
+
+    @Bean
+    @Primary
+    public ClockService clockService() {
+        return mock(ClockService.class);
     }
 }
