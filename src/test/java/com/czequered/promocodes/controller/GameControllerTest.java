@@ -85,8 +85,7 @@ public class GameControllerTest {
         String token = tokenService.generateToken("krtek");
         when(clock.millis()).thenReturn(10000000L + expiry + 1);
         mockMvc.perform(get("/api/v1/games/list").header(TOKEN_HEADER, token))
-                .andExpect(status().isForbidden())
-                .andReturn();
+            .andExpect(status().isForbidden());
     }
 
     @Test
@@ -94,8 +93,7 @@ public class GameControllerTest {
         when(gameService.getGame(eq("krtek"), eq("auticko"))).thenReturn(null);
         String token = tokenService.generateToken("krtek");
         mockMvc.perform(get("/api/v1/games/auticko").header(TOKEN_HEADER, token))
-                .andExpect(status().isNotFound())
-                .andReturn();
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -106,8 +104,7 @@ public class GameControllerTest {
         String token = tokenService.generateToken("krtek");
         when(clock.millis()).thenReturn(10000000L + expiry + 1);
         mockMvc.perform(get("/api/v1/games/auticko").header(TOKEN_HEADER, token))
-                .andExpect(status().isForbidden())
-                .andReturn();
+            .andExpect(status().isForbidden());
     }
 
     @Test
@@ -118,8 +115,7 @@ public class GameControllerTest {
         String token = tokenService.generateToken("krtek");
         mockMvc.perform(get("/api/v1/games/auticko").header(TOKEN_HEADER, token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.details").value("Ahoj"))
-                .andReturn();
+            .andExpect(jsonPath("$.details").value("Ahoj"));
     }
 
     private Game[] extractGames(MvcResult result) throws IOException {
