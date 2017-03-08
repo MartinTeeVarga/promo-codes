@@ -30,28 +30,28 @@ public class CodeServiceImplTest {
     @Test
     public void getCodes() throws Exception {
         Code code = new Code();
-        code.setGameId("test");
+        code.setGameId("auticko");
         code.setCodeId("PUB1");
-        when(codeRepository.findByGameId(eq("test"))).thenReturn(Collections.singletonList(code));
-        List<Code> codes = service.getCodes("test");
+        when(codeRepository.findByGameId(eq("auticko"))).thenReturn(Collections.singletonList(code));
+        List<Code> codes = service.getCodes("auticko");
         assertThat(codes).containsExactly(code);
     }
 
     @Test
     public void getCode() {
         Code code = new Code();
-        code.setGameId("test");
+        code.setGameId("auticko");
         code.setCodeId("PUB1");
         code.setPayload("Hello");
-        when(codeRepository.findByGameIdAndCodeId(eq("test"), eq("PUB1"))).thenReturn(code);
-        Code retrieved = service.getCode("test", "PUB1");
+        when(codeRepository.findByGameIdAndCodeId(eq("auticko"), eq("PUB1"))).thenReturn(code);
+        Code retrieved = service.getCode("auticko", "PUB1");
         assertThat(retrieved.getPayload()).isEqualTo("Hello");
     }
 
     @Test
     public void deleteCode() throws Exception {
-        service.deleteCode("test", "PUB1");
-        Code toDelete = new Code("test", "PUB1");
+        service.deleteCode("auticko", "PUB1");
+        Code toDelete = new Code("auticko", "PUB1");
         verify(codeRepository).delete(eq(toDelete));
         verifyNoMoreInteractions(codeRepository);
     }
@@ -59,7 +59,7 @@ public class CodeServiceImplTest {
     @Test
     public void saveCode() throws Exception {
         Code code = new Code();
-        code.setGameId("test");
+        code.setGameId("auticko");
         code.setCodeId("PUB1");
         service.saveCode(code);
         verify(codeRepository).save(eq(code));

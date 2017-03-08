@@ -1,7 +1,6 @@
 package com.czequered.promocodes.controller;
 
 import com.czequered.promocodes.model.User;
-import com.czequered.promocodes.service.InvalidTokenException;
 import com.czequered.promocodes.service.TokenService;
 import com.czequered.promocodes.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +33,8 @@ public class UserController {
         method = GET,
         produces = APPLICATION_JSON_VALUE)
     public HttpEntity<User> getUser(@RequestHeader(TOKEN_HEADER) String token) {
-        try {
-            String userIdFromToken = tokenService.getUserIdFromToken(token);
-            User user = userService.getUser(userIdFromToken);
-            return new HttpEntity<>(user);
-        } catch (InvalidTokenException e) {
-            throw new InvalidTokenHeaderException();
-        }
+        String userIdFromToken = tokenService.getUserIdFromToken(token);
+        User user = userService.getUser(userIdFromToken);
+        return new HttpEntity<>(user);
     }
 }

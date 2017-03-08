@@ -2,7 +2,6 @@ package com.czequered.promocodes.controller;
 
 import com.czequered.promocodes.model.Game;
 import com.czequered.promocodes.service.GameService;
-import com.czequered.promocodes.service.InvalidTokenException;
 import com.czequered.promocodes.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -35,32 +34,24 @@ public class GameController {
     }
 
     @RequestMapping(value = "/list",
-            method = GET,
-            produces = APPLICATION_JSON_VALUE)
+        method = GET,
+        produces = APPLICATION_JSON_VALUE)
     public HttpEntity<List<Game>> list(@RequestHeader(name = TOKEN_HEADER) String token) {
-        try {
-            String userIdFromToken = tokenService.getUserIdFromToken(token);
-            List<Game> games = gameService.getGames(userIdFromToken);
-            return new HttpEntity<>(games);
-        } catch (InvalidTokenException e) {
-            throw new InvalidTokenHeaderException();
-        }
+        String userIdFromToken = tokenService.getUserIdFromToken(token);
+        List<Game> games = gameService.getGames(userIdFromToken);
+        return new HttpEntity<>(games);
     }
 
     @RequestMapping(value = "/{gameId}",
-            method = GET,
-            produces = APPLICATION_JSON_VALUE)
+        method = GET,
+        produces = APPLICATION_JSON_VALUE)
     public HttpEntity<Game> getCode(@RequestHeader(name = TOKEN_HEADER) String token,
                                     @PathVariable("gameId") String gameId) {
-        try {
-            String userIdFromToken = tokenService.getUserIdFromToken(token);
-            Game game = gameService.getGame(userIdFromToken, gameId);
-            if (game == null) {
-                throw new GameNotFoundException();
-            }
-            return new HttpEntity<>(game);
-        } catch (InvalidTokenException e) {
-            throw new InvalidTokenHeaderException();
+        String userIdFromToken = tokenService.getUserIdFromToken(token);
+        Game game = gameService.getGame(userIdFromToken, gameId);
+        if (game == null) {
+            throw new GameNotFoundException();
         }
+        return new HttpEntity<>(game);
     }
 }

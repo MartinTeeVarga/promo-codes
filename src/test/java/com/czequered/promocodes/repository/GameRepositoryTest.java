@@ -39,30 +39,30 @@ public class GameRepositoryTest {
 
     @Test
     public void findByUserId() {
-        saveGame("krtek", "game1");
-        saveGame("krtek", "game2");
+        saveGame("Krtek", "game1");
+        saveGame("Krtek", "game2");
         saveGame("sova", "game3");
 
-        List<Game> all = repository.findByUserId("krtek");
-        assertThat(all).containsOnly(new Game("krtek", "game1"), new Game("krtek", "game2"));
+        List<Game> all = repository.findByUserId("Krtek");
+        assertThat(all).containsOnly(new Game("Krtek", "game1"), new Game("Krtek", "game2"));
     }
 
     @Test
     public void findByUserIdAndGameId() {
-        saveGame("krtek", "game1");
-        saveGame("krtek", "game2");
+        saveGame("Krtek", "game1");
+        saveGame("Krtek", "game2");
         saveGame("sova", "game3");
 
-        repository.findByUserId("krtek").stream().forEach(g -> {
+        repository.findByUserId("Krtek").stream().forEach(g -> {
             System.out.println("g.getUserId() = " + g.getUserId());
             System.out.println("g.getGameId() = " + g.getGameId());
         });
 
-        Game byUserIdAndGameId = repository.findByUserIdAndGameId("krtek", "game2");
+        Game byUserIdAndGameId = repository.findByUserIdAndGameId("Krtek", "game2");
         System.out.println("byUserIdAndGameId.getUserId() = " + byUserIdAndGameId.getUserId());
         System.out.println("byUserIdAndGameId.getGameId() = " + byUserIdAndGameId.getGameId());
 
-        assertThat(repository.findByUserIdAndGameId("krtek", "game2")).isEqualTo(new Game("krtek", "game2"));
+        assertThat(repository.findByUserIdAndGameId("Krtek", "game2")).isEqualTo(new Game("Krtek", "game2"));
     }
 
     private void saveGame(String userId, String gameId) {

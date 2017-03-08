@@ -11,12 +11,12 @@ public class GameTest {
     @Test
     public void equalsTest() throws Exception {
         Game game1 = new Game();
-        game1.setGameId("test");
+        game1.setGameId("auticko");
         game1.setUserId("Joe");
         game1.setDetails("{}");
 
         Game game2 = new Game();
-        game2.setGameId("test");
+        game2.setGameId("auticko");
         game2.setUserId("Joe");
         game2.setDetails("Not empty");
 
@@ -26,11 +26,11 @@ public class GameTest {
     @Test
     public void hashCodeTest() throws Exception {
         Game game1 = new Game();
-        game1.setGameId("test");
+        game1.setGameId("auticko");
         game1.setUserId("Joe");
         game1.setDetails("A");
 
-        Game id = new Game("Joe", "test");
+        Game id = new Game("Joe", "auticko");
         assertThat(game1.hashCode()).isEqualTo(id.hashCode());
     }
 }

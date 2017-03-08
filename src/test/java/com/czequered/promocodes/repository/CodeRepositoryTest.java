@@ -41,7 +41,7 @@ public class CodeRepositoryTest {
     public void findAllByGameId() {
         for (int i = 0; i < 4; i++) {
             Code code = new Code();
-            code.setGameId("test");
+            code.setGameId("auticko");
             code.setCodeId("PUB" + i);
             repository.save(code);
 
@@ -50,14 +50,14 @@ public class CodeRepositoryTest {
             otherCode.setCodeId("PRV" + i);
             repository.save(otherCode);
         }
-        List<Code> all = repository.findByGameId("test");
+        List<Code> all = repository.findByGameId("auticko");
         assertThat(all).hasSize(4);
     }
 
     @Test
     public void findByGameAndCode() {
         Code code = new Code();
-        code.setGameId("test");
+        code.setGameId("auticko");
         code.setCodeId("PUB1");
         code.setFrom("2012-01-27T03:47:26+00:00");
         code.setTo("2037-01-27T03:47:26+00:00");
@@ -65,7 +65,7 @@ public class CodeRepositoryTest {
         code.setPayload("Hello World");
         repository.save(code);
 
-        Code retrieved = repository.findByGameIdAndCodeId("test", "PUB1");
+        Code retrieved = repository.findByGameIdAndCodeId("auticko", "PUB1");
         assertThat(retrieved).isEqualTo(code);
     }
 
@@ -91,13 +91,13 @@ public class CodeRepositoryTest {
     @Test
     public void delete() {
         Code code = new Code();
-        code.setGameId("test");
+        code.setGameId("auticko");
         code.setCodeId("PUB1");
         repository.save(code);
-        Code foundBefore = repository.findByGameIdAndCodeId("test", "PUB1");
+        Code foundBefore = repository.findByGameIdAndCodeId("auticko", "PUB1");
         assertThat(foundBefore).isEqualTo(code);
-        repository.delete(new Code("test", "PUB1"));
-        Code foundAfter = repository.findByGameIdAndCodeId("test", "PUB1");
+        repository.delete(new Code("auticko", "PUB1"));
+        Code foundAfter = repository.findByGameIdAndCodeId("auticko", "PUB1");
         assertThat(foundAfter).isNull();
     }
 }

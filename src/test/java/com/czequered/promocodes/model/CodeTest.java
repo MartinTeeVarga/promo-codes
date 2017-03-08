@@ -11,12 +11,12 @@ public class CodeTest {
     @Test
     public void equalsTest() throws Exception {
         Code code1 = new Code();
-        code1.setGameId("test");
+        code1.setGameId("auticko");
         code1.setCodeId("PUB1");
         code1.setPayload("A");
 
         Code code2 = new Code();
-        code2.setGameId("test");
+        code2.setGameId("auticko");
         code2.setCodeId("PUB1");
         code2.setPayload("B");
 
@@ -26,11 +26,11 @@ public class CodeTest {
     @Test
     public void hashCodeTest() throws Exception {
         Code code1 = new Code();
-        code1.setGameId("test");
+        code1.setGameId("auticko");
         code1.setCodeId("PUB1");
         code1.setPayload("A");
 
-        Code id = new Code("test", "PUB1");
+        Code id = new Code("auticko", "PUB1");
         assertThat(code1.hashCode()).isEqualTo(id.hashCode());
     }
 }
