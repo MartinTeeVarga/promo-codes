@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,6 +25,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -58,8 +60,8 @@ public class GameControllerTest {
         when(gameService.getGames(eq("Krtek"))).thenReturn(Collections.singletonList(game));
         String token = tokenService.generateToken("Krtek");
         MvcResult result = mockMvc.perform(get("/api/v1/games/list").header(TOKEN_HEADER, token))
-            .andExpect(status().isOk())
-            .andReturn();
+                .andExpect(status().isOk())
+                .andReturn();
         Game[] games = extractGames(result);
         assertThat(games).containsExactly(game);
     }
@@ -69,7 +71,7 @@ public class GameControllerTest {
         when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(null);
         String token = tokenService.generateToken("Krtek");
         mockMvc.perform(get("/api/v1/games/auticko").header(TOKEN_HEADER, token))
-            .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -79,9 +81,33 @@ public class GameControllerTest {
         when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(game);
         String token = tokenService.generateToken("Krtek");
         mockMvc.perform(get("/api/v1/games/auticko").header(TOKEN_HEADER, token))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.details").value("Ahoj"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.details").value("Ahoj"));
     }
+
+    @Test
+    public void saveNewGame() throws Exception {
+        Game game = new Game("Krtek", "auticko");
+        game.setDetails("Ahoj");
+        when(gameService.saveGame(eq(game))).thenReturn(game);
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(game);
+        mockMvc.perform(post("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.gameId").value("auticko"));
+    }
+//
+//    @Test
+//    public void saveNewGameExists() throws Exception {
+//        Game game = new Game("Krtek", "auticko");
+//        game.setDetails("Ahoj");
+//        when(gameService.saveGame(eq(game))).thenReturn(null);
+//        ObjectMapper mapper = new ObjectMapper();
+//        String json = mapper.writeValueAsString(game);
+//        mockMvc.perform(post("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.gameId").value("auticko"));
+//    }
 
     private Game[] extractGames(MvcResult result) throws IOException {
         String contentAsString = result.getResponse().getContentAsString();

@@ -5,16 +5,14 @@ import com.czequered.promocodes.service.GameService;
 import com.czequered.promocodes.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 import static com.czequered.promocodes.config.Constants.TOKEN_HEADER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
  * @author Martin Varga
@@ -44,8 +42,8 @@ public class GameController {
 
     @RequestMapping(value = "/{gameId}",
         method = GET,
-        produces = APPLICATION_JSON_VALUE)
-    public HttpEntity<Game> getCode(@RequestHeader(name = TOKEN_HEADER) String token,
+            produces = APPLICATION_JSON_VALUE)
+    public HttpEntity<Game> getGame(@RequestHeader(name = TOKEN_HEADER) String token,
                                     @PathVariable("gameId") String gameId) {
         String userIdFromToken = tokenService.getUserIdFromToken(token);
         Game game = gameService.getGame(userIdFromToken, gameId);
@@ -53,5 +51,12 @@ public class GameController {
             throw new GameNotFoundException();
         }
         return new HttpEntity<>(game);
+    }
+
+    @RequestMapping(method = POST,
+        produces = APPLICATION_JSON_VALUE)
+    public HttpEntity<Game> saveNewGame(@RequestBody Game game) {
+        Game saveGame = gameService.saveGame(game);
+        return new HttpEntity<>(saveGame);
     }
 }
