@@ -9,8 +9,12 @@ import java.io.Serializable;
  * @author Martin Varga
  */
 public class AbstractDynamoDBRepository<T> implements Serializable {
-    @Autowired
     DynamoDBMapper mapper;
+
+    @Autowired
+    public AbstractDynamoDBRepository(DynamoDBMapper mapper) {
+        this.mapper = mapper;
+    }
 
     public T save(T item) {
         mapper.save(item);

@@ -6,29 +6,27 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.czequered.promocodes.model.User;
+import com.czequered.promocodes.model.Game;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Martin Varga
  */
-public class UserRepositoryTest {
+public class AbstractDynamoDBRepositoryTest {
 
-    @Autowired
-    UserRepository userRepository;
+    GameRepository gameRepository;
 
     @ClassRule
     public static final LocalDynamoDBCreationRule dynamoDBProvider = new LocalDynamoDBCreationRule();
 
     @Before
     public void before() {
-        dynamoDBProvider.createTable(User.class);
+        dynamoDBProvider.createTable(Game.class);
 
         AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder.standard()
             .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("access", "secret")))
@@ -36,25 +34,35 @@ public class UserRepositoryTest {
             .build();
 
         DynamoDBMapper mapper = new DynamoDBMapper(amazonDynamoDB);
-        userRepository = new UserRepository(mapper);
+        gameRepository = new GameRepository(mapper);
     }
 
     @After
     public void after() {
-        dynamoDBProvider.deleteTable(User.class);
+        dynamoDBProvider.deleteTable(Game.class);
     }
-
 
     @Test
-    public void findByUserId() {
-        User krtek = new User("Krtek");
-        krtek.setDetails("Mys");
-        User sova = new User("Sova");
-
-        userRepository.save(krtek);
-        userRepository.save(sova);
-
-        User krtekRetrieved = userRepository.findByUserId("Krtek");
-        assertThat(krtekRetrieved).isEqualToComparingFieldByField(krtek);
+    public void save() throws Exception {
+        Game game = new Game();
+        game.setUserId("Krtek");
+        game.setGameId("auticko");
+        game.setDetails("{}");
+        Game saved = gameRepository.save(game);
+        assertThat(saved).isEqualTo(game);
+        assertThat(saved.getDetails()).isEqualTo(game.getDetails());
     }
+
+    @Test
+    public void delete() throws Exception {
+        Game game = new Game();
+        game.setUserId("Krtek");
+        game.setGameId("auticko");
+        game.setDetails("{}");
+        Game saved = gameRepository.save(game);
+        gameRepository.delete(saved);
+        Game found = gameRepository.findByUserIdAndGameId("Krtek", "auticko");
+        assertThat(found).isNull();
+    }
+
 }

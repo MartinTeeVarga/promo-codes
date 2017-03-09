@@ -1,9 +1,11 @@
 package com.czequered.promocodes.repository;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.czequered.promocodes.model.Code;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -16,6 +18,11 @@ import java.util.stream.Collectors;
  */
 @Component
 public class CodeRepository extends AbstractDynamoDBRepository<Code> {
+
+    @Autowired
+    public CodeRepository(DynamoDBMapper mapper) {
+        super(mapper);
+    }
 
     public Code findByGameIdAndCodeId(String gameId, String codeId) {
         return mapper.load(Code.class, gameId, codeId);
