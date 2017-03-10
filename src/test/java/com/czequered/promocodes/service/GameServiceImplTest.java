@@ -68,13 +68,7 @@ public class GameServiceImplTest {
         Game game = new Game("Krtek", null);
         when(idGeneratorService.generate()).thenReturn("auticko");
         when(gameRepository.findByUserIdAndGameId(eq("Krtek"), eq("auticko"))).thenReturn(null);
-        when(gameRepository.save(any(Game.class))).thenAnswer(new Answer<Game>() {
-            @Override
-            public Game answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                return (Game) args[0];
-            }
-        });
+        when(gameRepository.save(any(Game.class))).then(i -> i.getArgumentAt(0, Game.class));
         Game saved = gameService.saveGame(game);
         assertThat(saved.getGameId())
             .isNotNull()
