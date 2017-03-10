@@ -60,7 +60,7 @@ public class Game {
         Game game = (Game) o;
 
         if (!userId.equals(game.userId)) return false;
-        return gameId.equals(game.gameId);
+        return Objects.equals(this.gameId, game.gameId);
     }
 
     @Override public int hashCode() {

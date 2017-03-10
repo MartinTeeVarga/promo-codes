@@ -93,7 +93,7 @@ public class Code {
         Code code = (Code) o;
 
         if (!gameId.equals(code.gameId)) return false;
-        return codeId.equals(code.codeId);
+        return Objects.equals(this.codeId, code.codeId);
     }
 
     @Override public int hashCode() {

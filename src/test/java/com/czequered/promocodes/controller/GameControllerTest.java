@@ -24,8 +24,7 @@ import static com.czequered.promocodes.config.Constants.TOKEN_HEADER;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -87,27 +86,31 @@ public class GameControllerTest {
 
     @Test
     public void saveNewGame() throws Exception {
-        Game game = new Game("Krtek", "auticko");
+        Game game = new Game("Krtek", null);
         game.setDetails("Ahoj");
-        when(gameService.saveGame(eq(game))).thenReturn(game);
+
+        Game saved = new Game(game.getUserId(), "auticko");
+        saved.setDetails(game.getDetails());
+
+        when(gameService.saveGame(eq(game))).thenReturn(saved);
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(game);
         mockMvc.perform(post("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.gameId").value("auticko"));
     }
-//
-//    @Test
-//    public void saveNewGameExists() throws Exception {
-//        Game game = new Game("Krtek", "auticko");
-//        game.setDetails("Ahoj");
-//        when(gameService.saveGame(eq(game))).thenReturn(null);
-//        ObjectMapper mapper = new ObjectMapper();
-//        String json = mapper.writeValueAsString(game);
-//        mockMvc.perform(post("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.gameId").value("auticko"));
-//    }
+
+    @Test
+    public void saveExistingGame() throws Exception {
+        Game game = new Game("Krtek", "auticko");
+        game.setDetails("Ahoj");
+        when(gameService.saveGame(eq(game))).thenReturn(game);
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(game);
+        mockMvc.perform(put("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.gameId").value("auticko"));
+    }
 
     private Game[] extractGames(MvcResult result) throws IOException {
         String contentAsString = result.getResponse().getContentAsString();

@@ -11,8 +11,7 @@ import java.util.List;
 
 import static com.czequered.promocodes.config.Constants.TOKEN_HEADER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
  * @author Martin Varga
@@ -56,6 +55,16 @@ public class GameController {
     @RequestMapping(method = POST,
         produces = APPLICATION_JSON_VALUE)
     public HttpEntity<Game> saveNewGame(@RequestBody Game game) {
+        if (game.getGameId() != null) {
+            throw new InvalidRequestException();
+        }
+        Game saveGame = gameService.saveGame(game);
+        return new HttpEntity<>(saveGame);
+    }
+
+    @RequestMapping(method = PUT,
+        produces = APPLICATION_JSON_VALUE)
+    public HttpEntity<Game> saveExistingGame(@RequestBody Game game) {
         Game saveGame = gameService.saveGame(game);
         return new HttpEntity<>(saveGame);
     }
