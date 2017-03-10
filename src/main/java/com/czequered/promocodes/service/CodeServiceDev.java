@@ -40,21 +40,21 @@ public class CodeServiceDev implements CodeService {
     }
 
     @Override
-    public List<Code> getCodes(String game) {
+    public List<Code> getCodes(String gameId) {
         return localCache.keySet().stream()
-            .filter(k -> k.getGameId().equals(game))
+                .filter(k -> k.getGameId().equals(gameId))
             .map(k -> localCache.get(k))
             .collect(Collectors.toList());
     }
 
     @Override
-    public Code getCode(String game, String code) {
-        return localCache.get(new Code(game, code));
+    public Code getCode(String gameId, String codeId) {
+        return localCache.get(new Code(gameId, codeId));
     }
 
     @Override
-    public void deleteCode(String game, String code) {
-        localCache.remove(new Code(game, code));
+    public void deleteCode(String gameId, String codeId) {
+        localCache.remove(new Code(gameId, codeId));
     }
 
     @Override

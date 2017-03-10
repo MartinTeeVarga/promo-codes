@@ -8,11 +8,11 @@ import java.util.List;
  * @author Martin Varga
  */
 public interface CodeService {
-    List<Code> getCodes(String game);
+    List<Code> getCodes(String gameId);
 
-    Code getCode(String game, String code);
+    Code getCode(String gameId, String codeId);
 
-    void deleteCode(String game, String code);
+    void deleteCode(String gameId, String codeId);
 
     Code saveCode(Code code);
 }

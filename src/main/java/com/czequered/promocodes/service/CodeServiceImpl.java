@@ -20,20 +20,20 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Override
-    public List<Code> getCodes(String game) {
-        return codeRepository.findByGameId(game);
+    public List<Code> getCodes(String gameId) {
+        return codeRepository.findByGameId(gameId);
     }
 
     @Override
-    public Code getCode(String game, String code) {
-        return codeRepository.findByGameIdAndCodeId(game, code);
+    public Code getCode(String gameId, String codeId) {
+        return codeRepository.findByGameIdAndCodeId(gameId, codeId);
     }
 
     @Override
-    public void deleteCode(String game, String code) {
+    public void deleteCode(String gameId, String codeId) {
         Code toDelete = new Code();
-        toDelete.setGameId(game);
-        toDelete.setCodeId(code);
+        toDelete.setGameId(gameId);
+        toDelete.setCodeId(codeId);
         codeRepository.delete(toDelete);
     }
 

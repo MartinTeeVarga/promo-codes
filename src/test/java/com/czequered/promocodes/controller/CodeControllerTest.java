@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,9 +24,10 @@ import java.util.Collections;
 
 import static com.czequered.promocodes.config.Constants.TOKEN_HEADER;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -51,9 +53,11 @@ public class CodeControllerTest {
     private TokenService tokenService;
 
     private MockMvc mockMvc;
+    private ObjectMapper mapper;
 
     @Before
     public void before() {
+        mapper = new ObjectMapper();
         mockMvc = webAppContextSetup(webApplicationContext).build();
     }
 
@@ -66,8 +70,8 @@ public class CodeControllerTest {
         when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(new Game("Krtek", "auticko"));
         when(codeService.getCodes("auticko")).thenReturn(Collections.singletonList(code));
         MvcResult result = mockMvc.perform(get("/api/v1/games/auticko/codes/list").header(TOKEN_HEADER, token))
-            .andExpect(status().isOk())
-            .andReturn();
+                .andExpect(status().isOk())
+                .andReturn();
         Code[] codes = extractCodes(result);
         assertThat(codes).containsExactly(code);
     }
@@ -80,7 +84,7 @@ public class CodeControllerTest {
         String token = tokenService.generateToken("Krtek");
         when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(null);
         mockMvc.perform(get("/api/v1/games/auticko/codes/list").header(TOKEN_HEADER, token))
-            .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -93,9 +97,9 @@ public class CodeControllerTest {
         when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(new Game("Krtek", "auticko"));
         when(codeService.getCode(eq("auticko"), eq("PUB1"))).thenReturn(code);
         mockMvc.perform(get("/api/v1/games/auticko/codes/PUB1").header(TOKEN_HEADER, token))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.payload").value("Hello"))
-            .andReturn();
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload").value("Hello"))
+                .andReturn();
     }
 
     @Test
@@ -107,7 +111,7 @@ public class CodeControllerTest {
         String token = tokenService.generateToken("Krtek");
         when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(null);
         mockMvc.perform(get("/api/v1/games/auticko/codes/PUB1").header(TOKEN_HEADER, token))
-            .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -116,11 +120,71 @@ public class CodeControllerTest {
         code.setGameId("auticko");
         code.setCodeId("PUB2");
         code.setPayload("Hello");
-        String token = tokenService.generateToken("Krtek");
         when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(new Game("Krtek", "auticko"));
+        String token = tokenService.generateToken("Krtek");
         when(codeService.getCode(eq("auticko"), eq("PUB1"))).thenReturn(null);
         mockMvc.perform(get("/api/v1/games/auticko/codes/PUB1").header(TOKEN_HEADER, token))
-            .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void saveNewCode() throws Exception {
+        Code code = new Code("auticko", "PUB1");
+        code.setPayload("Ahoj");
+
+        when(codeService.getCode(eq("auticko"), eq("PUB1"))).thenReturn(null);
+        when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(new Game("Krtek", "auticko"));
+        when(codeService.saveCode(any(Code.class))).then(i -> i.getArgumentAt(0, Code.class));
+        String token = tokenService.generateToken("Krtek");
+
+        String json = mapper.writeValueAsString(code);
+        mockMvc.perform(post("/api/v1/games/auticko/codes").contentType(MediaType.APPLICATION_JSON).content(json).header(TOKEN_HEADER, token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload").value("Ahoj"));
+    }
+
+    @Test
+    public void saveNewCodeExists() throws Exception {
+        Code code = new Code("auticko", "PUB1");
+        code.setPayload("Ahoj");
+
+        when(codeService.getCode(eq("auticko"), eq("PUB1"))).thenReturn(new Code("auticko", "PUB1"));
+        when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(new Game("Krtek", "auticko"));
+        String token = tokenService.generateToken("Krtek");
+        String json = mapper.writeValueAsString(code);
+        mockMvc.perform(post("/api/v1/games/auticko/codes").contentType(MediaType.APPLICATION_JSON).content(json).header(TOKEN_HEADER, token))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void saveExistingCode() throws Exception {
+        Code code = new Code("auticko", "PUB1");
+        code.setPayload("Ahoj");
+
+        when(codeService.getCode(eq("auticko"), eq("PUB1"))).thenReturn(new Code("auticko", "PUB1"));
+        when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(new Game("Krtek", "auticko"));
+        when(codeService.saveCode(any(Code.class))).then(i -> i.getArgumentAt(0, Code.class));
+        String token = tokenService.generateToken("Krtek");
+
+        String json = mapper.writeValueAsString(code);
+        mockMvc.perform(put("/api/v1/games/auticko/codes").contentType(MediaType.APPLICATION_JSON).content(json).header(TOKEN_HEADER, token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.payload").value("Ahoj"));
+    }
+
+    @Test
+    public void saveExistingCodeDoesNotExist() throws Exception {
+        Code code = new Code("auticko", "PUB1");
+        code.setPayload("Ahoj");
+
+        when(codeService.getCode(eq("auticko"), eq("PUB1"))).thenReturn(null);
+        when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(new Game("Krtek", "auticko"));
+        when(codeService.saveCode(any(Code.class))).then(i -> i.getArgumentAt(0, Code.class));
+        String token = tokenService.generateToken("Krtek");
+
+        String json = mapper.writeValueAsString(code);
+        mockMvc.perform(put("/api/v1/games/auticko/codes").contentType(MediaType.APPLICATION_JSON).content(json).header(TOKEN_HEADER, token))
+                .andExpect(status().isBadRequest());
     }
 
     private Code[] extractCodes(MvcResult result) throws IOException {
