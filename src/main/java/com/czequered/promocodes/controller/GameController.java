@@ -65,6 +65,9 @@ public class GameController {
     @RequestMapping(method = PUT,
         produces = APPLICATION_JSON_VALUE)
     public HttpEntity<Game> saveExistingGame(@RequestBody Game game) {
+        if (game.getGameId() == null) {
+            throw new InvalidRequestException();
+        }
         Game saveGame = gameService.saveGame(game);
         return new HttpEntity<>(saveGame);
     }

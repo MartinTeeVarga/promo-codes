@@ -47,9 +47,11 @@ public class GameControllerTest {
     private TokenService tokenService;
 
     private MockMvc mockMvc;
+    private ObjectMapper mapper;
 
     @Before
     public void before() {
+        mapper = new ObjectMapper();
         mockMvc = webAppContextSetup(webApplicationContext).build();
     }
 
@@ -59,8 +61,8 @@ public class GameControllerTest {
         when(gameService.getGames(eq("Krtek"))).thenReturn(Collections.singletonList(game));
         String token = tokenService.generateToken("Krtek");
         MvcResult result = mockMvc.perform(get("/api/v1/games/list").header(TOKEN_HEADER, token))
-                .andExpect(status().isOk())
-                .andReturn();
+            .andExpect(status().isOk())
+            .andReturn();
         Game[] games = extractGames(result);
         assertThat(games).containsExactly(game);
     }
@@ -70,7 +72,7 @@ public class GameControllerTest {
         when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(null);
         String token = tokenService.generateToken("Krtek");
         mockMvc.perform(get("/api/v1/games/auticko").header(TOKEN_HEADER, token))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -80,8 +82,8 @@ public class GameControllerTest {
         when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(game);
         String token = tokenService.generateToken("Krtek");
         mockMvc.perform(get("/api/v1/games/auticko").header(TOKEN_HEADER, token))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.details").value("Ahoj"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.details").value("Ahoj"));
     }
 
     @Test
@@ -93,11 +95,18 @@ public class GameControllerTest {
         saved.setDetails(game.getDetails());
 
         when(gameService.saveGame(eq(game))).thenReturn(saved);
-        ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(game);
         mockMvc.perform(post("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.gameId").value("auticko"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.gameId").value("auticko"));
+    }
+
+    @Test
+    public void saveNewGameWithIdSet() throws Exception {
+        Game game = new Game("Krtek", "auticko");
+        String json = mapper.writeValueAsString(game);
+        mockMvc.perform(post("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -105,16 +114,22 @@ public class GameControllerTest {
         Game game = new Game("Krtek", "auticko");
         game.setDetails("Ahoj");
         when(gameService.saveGame(eq(game))).thenReturn(game);
-        ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(game);
         mockMvc.perform(put("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.gameId").value("auticko"));
     }
 
+    @Test
+    public void saveExistingGameWithNullId() throws Exception {
+        Game game = new Game("Krtek", null);
+        String json = mapper.writeValueAsString(game);
+        mockMvc.perform(put("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
+            .andExpect(status().isBadRequest());
+    }
+
     private Game[] extractGames(MvcResult result) throws IOException {
         String contentAsString = result.getResponse().getContentAsString();
-        ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(contentAsString);
         return mapper.treeToValue(root, Game[].class);
     }
