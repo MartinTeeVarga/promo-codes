@@ -84,6 +84,17 @@ public class CodeController {
         return new HttpEntity<>(saved);
     }
 
+    @RequestMapping(value = "/{codeId}",
+            method = DELETE,
+            produces = APPLICATION_JSON_VALUE)
+    public HttpEntity deleteCode(@RequestHeader(name = TOKEN_HEADER) String token,
+                                 @PathVariable("gameId") String gameId,
+                                 @PathVariable("codeId") String codeId) {
+        checkAccessRights(token, gameId);
+        codeService.deleteCode(gameId, codeId);
+        return HttpEntity.EMPTY;
+    }
+
 
     private void checkAccessRights(String token, String gameId) {
         String userIdFromToken = tokenService.getUserIdFromToken(token);

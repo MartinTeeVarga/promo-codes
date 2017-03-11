@@ -187,6 +187,22 @@ public class CodeControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void deleteCode() throws Exception {
+        String token = tokenService.generateToken("Krtek");
+        when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(new Game("Krtek", "auticko"));
+        mockMvc.perform(delete("/api/v1/games/auticko/codes/PUB1").header(TOKEN_HEADER, token))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void deleteCodeForbidden() throws Exception {
+        String token = tokenService.generateToken("Krtek");
+        when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(null);
+        mockMvc.perform(delete("/api/v1/games/auticko/codes/PUB1").header(TOKEN_HEADER, token))
+                .andExpect(status().isForbidden());
+    }
+
     private Code[] extractCodes(MvcResult result) throws IOException {
         String contentAsString = result.getResponse().getContentAsString();
         ObjectMapper mapper = new ObjectMapper();
