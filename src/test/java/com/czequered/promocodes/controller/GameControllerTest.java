@@ -5,6 +5,7 @@ import com.czequered.promocodes.service.GameService;
 import com.czequered.promocodes.service.TokenService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,8 +23,9 @@ import java.util.Collections;
 
 import static com.czequered.promocodes.config.Constants.TOKEN_HEADER;
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,6 +55,11 @@ public class GameControllerTest {
     public void before() {
         mapper = new ObjectMapper();
         mockMvc = webAppContextSetup(webApplicationContext).build();
+    }
+
+    @After
+    public void after() {
+        reset(gameService);
     }
 
     @Test
@@ -107,6 +114,7 @@ public class GameControllerTest {
         String json = mapper.writeValueAsString(game);
         mockMvc.perform(post("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
             .andExpect(status().isBadRequest());
+        verify(gameService, never()).saveGame(any(Game.class));
     }
 
     @Test
@@ -126,6 +134,15 @@ public class GameControllerTest {
         String json = mapper.writeValueAsString(game);
         mockMvc.perform(put("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
             .andExpect(status().isBadRequest());
+        verify(gameService, never()).saveGame(any(Game.class));
+    }
+
+    @Test
+    public void deleteGame() throws Exception {
+        String token = tokenService.generateToken("Krtek");
+        mockMvc.perform(delete("/api/v1/games/auticko").header(TOKEN_HEADER, token))
+                .andExpect(status().isOk());
+        verify(gameService, only()).deleteGame(eq("Krtek"), eq("auticko"));
     }
 
     private Game[] extractGames(MvcResult result) throws IOException {

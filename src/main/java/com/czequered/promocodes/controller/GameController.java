@@ -71,4 +71,14 @@ public class GameController {
         Game saveGame = gameService.saveGame(game);
         return new HttpEntity<>(saveGame);
     }
+
+    @RequestMapping(value = "/{gameId}",
+            method = DELETE,
+            produces = APPLICATION_JSON_VALUE)
+    public HttpEntity deteleGame(@RequestHeader(name = TOKEN_HEADER) String token,
+                                 @PathVariable("gameId") String gameId) {
+        String userIdFromToken = tokenService.getUserIdFromToken(token);
+        gameService.deleteGame(userIdFromToken, gameId);
+        return HttpEntity.EMPTY;
+    }
 }
