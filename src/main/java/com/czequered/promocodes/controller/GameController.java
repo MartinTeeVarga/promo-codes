@@ -54,7 +54,7 @@ public class GameController {
 
     @RequestMapping(method = POST,
         produces = APPLICATION_JSON_VALUE)
-    public HttpEntity<Game> saveNewGame(@RequestBody Game game) {
+    public HttpEntity<Game> saveNewGame(@RequestBody(required = true) Game game) {
         if (game.getGameId() != null) {
             throw new InvalidRequestException();
         }
@@ -64,7 +64,7 @@ public class GameController {
 
     @RequestMapping(method = PUT,
         produces = APPLICATION_JSON_VALUE)
-    public HttpEntity<Game> saveExistingGame(@RequestBody Game game) {
+    public HttpEntity<Game> saveExistingGame(@RequestBody(required = true) Game game) {
         if (game.getGameId() == null) {
             throw new InvalidRequestException();
         }

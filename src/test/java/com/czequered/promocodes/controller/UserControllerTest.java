@@ -3,11 +3,13 @@ package com.czequered.promocodes.controller;
 import com.czequered.promocodes.model.User;
 import com.czequered.promocodes.service.TokenService;
 import com.czequered.promocodes.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,7 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 import static com.czequered.promocodes.config.Constants.TOKEN_HEADER;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -41,9 +43,12 @@ public class UserControllerTest {
     private TokenService tokenService;
 
     private MockMvc mockMvc;
+    private ObjectMapper mapper;
 
     @Before
     public void before() {
+        mapper = new ObjectMapper();
+        reset(userService);
         mockMvc = webAppContextSetup(webApplicationContext).build();
     }
 
@@ -64,7 +69,8 @@ public class UserControllerTest {
         user.setDetails("Mys");
         when(userService.saveUser(any(User.class))).then(i -> i.getArgumentAt(0, User.class));
         String token = tokenService.generateToken("Krtek");
-        mockMvc.perform(put("/api/v1/user").header(TOKEN_HEADER, token))
+        String json = mapper.writeValueAsString(user);
+        mockMvc.perform(put("/api/v1/user").header(TOKEN_HEADER, token).contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.details").value("Mys"));
     }
@@ -73,9 +79,10 @@ public class UserControllerTest {
     public void saveExistingUserSpoofing() throws Exception {
         User user = new User("Sova");
         user.setDetails("Mys");
-        when(userService.saveUser(any(User.class))).then(i -> i.getArgumentAt(0, User.class));
         String token = tokenService.generateToken("Krtek");
-        mockMvc.perform(put("/api/v1/user").header(TOKEN_HEADER, token))
+        String json = mapper.writeValueAsString(user);
+        mockMvc.perform(put("/api/v1/user").header(TOKEN_HEADER, token).contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isBadRequest());
+        verify(userService, never()).saveUser(any(User.class));
     }
 }
