@@ -59,7 +59,7 @@ public class CodeController {
     @RequestMapping(method = POST,
             produces = APPLICATION_JSON_VALUE)
     public HttpEntity<Code> saveNewCode(@RequestHeader(name = TOKEN_HEADER) String token,
-                                        @RequestBody Code code) {
+                                        @RequestBody(required = true) Code code) {
         checkAccessRights(token, code.getGameId());
         // consider splitting the service save to create and update and move this logic there
         Code retrieved = codeService.getCode(code.getGameId(), code.getCodeId());
@@ -73,7 +73,7 @@ public class CodeController {
     @RequestMapping(method = PUT,
             produces = APPLICATION_JSON_VALUE)
     public HttpEntity<Code> saveExistingCode(@RequestHeader(name = TOKEN_HEADER) String token,
-                                             @RequestBody Code code) {
+                                             @RequestBody(required = true) Code code) {
         checkAccessRights(token, code.getGameId());
         // consider splitting the service save to create and update and move this logic there
         Code retrieved = codeService.getCode(code.getGameId(), code.getCodeId());
