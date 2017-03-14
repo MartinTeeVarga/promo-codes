@@ -21,6 +21,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  * @author Martin Varga
  */
 @RestController
+@RequestMapping("/api/v1/user")
 public class UserController {
 
     private UserService userService;
@@ -33,8 +34,7 @@ public class UserController {
         this.tokenService = tokenService;
     }
 
-    @RequestMapping(value = "/api/v1/user",
-            method = GET,
+    @RequestMapping(method = GET,
             produces = APPLICATION_JSON_VALUE)
     public HttpEntity<User> getUser(@RequestHeader(TOKEN_HEADER) String token) {
         String userIdFromToken = tokenService.getUserIdFromToken(token);
