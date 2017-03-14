@@ -138,8 +138,11 @@ public class GameControllerTest {
     @Test
     public void saveExistingGameWithNullId() throws Exception {
         Game game = new Game("Krtek", null);
+        String token = tokenService.generateToken("Krtek");
         String json = mapper.writeValueAsString(game);
-        mockMvc.perform(put("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
+        mockMvc.perform(put("/api/v1/games")
+                .header(TOKEN_HEADER, token)
+                .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isBadRequest());
         verify(gameService, never()).saveGame(any(Game.class));
     }
