@@ -8,6 +8,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.czequered.promocodes.config.Constants.TOKEN_HEADER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -54,8 +55,9 @@ public class GameController {
 
     @RequestMapping(method = POST,
         produces = APPLICATION_JSON_VALUE)
-    public HttpEntity<Game> saveNewGame(@RequestBody(required = true) Game game) {
-        if (game.getGameId() != null) {
+    public HttpEntity<Game> saveNewGame(@RequestHeader(name = TOKEN_HEADER) String token,
+                                        @RequestBody(required = true) Game game) {
+        if (game.getGameId() != null || !Objects.equals(tokenService.getUserIdFromToken(token), game.getUserId())) {
             throw new InvalidRequestException();
         }
         Game saveGame = gameService.saveGame(game);
@@ -64,8 +66,9 @@ public class GameController {
 
     @RequestMapping(method = PUT,
         produces = APPLICATION_JSON_VALUE)
-    public HttpEntity<Game> saveExistingGame(@RequestBody(required = true) Game game) {
-        if (game.getGameId() == null) {
+    public HttpEntity<Game> saveExistingGame(@RequestHeader(name = TOKEN_HEADER) String token,
+                                             @RequestBody(required = true) Game game) {
+        if (game.getGameId() == null || !Objects.equals(tokenService.getUserIdFromToken(token), game.getUserId())) {
             throw new InvalidRequestException();
         }
         Game saveGame = gameService.saveGame(game);

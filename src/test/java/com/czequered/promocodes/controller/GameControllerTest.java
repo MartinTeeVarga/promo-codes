@@ -68,8 +68,8 @@ public class GameControllerTest {
         when(gameService.getGames(eq("Krtek"))).thenReturn(Collections.singletonList(game));
         String token = tokenService.generateToken("Krtek");
         MvcResult result = mockMvc.perform(get("/api/v1/games/list").header(TOKEN_HEADER, token))
-            .andExpect(status().isOk())
-            .andReturn();
+                .andExpect(status().isOk())
+                .andReturn();
         Game[] games = extractGames(result);
         assertThat(games).containsExactly(game);
     }
@@ -79,7 +79,7 @@ public class GameControllerTest {
         when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(null);
         String token = tokenService.generateToken("Krtek");
         mockMvc.perform(get("/api/v1/games/auticko").header(TOKEN_HEADER, token))
-            .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -89,31 +89,35 @@ public class GameControllerTest {
         when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(game);
         String token = tokenService.generateToken("Krtek");
         mockMvc.perform(get("/api/v1/games/auticko").header(TOKEN_HEADER, token))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.details").value("Ahoj"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.details").value("Ahoj"));
     }
 
     @Test
     public void saveNewGame() throws Exception {
         Game game = new Game("Krtek", null);
         game.setDetails("Ahoj");
-
         Game saved = new Game(game.getUserId(), "auticko");
         saved.setDetails(game.getDetails());
-
+        String token = tokenService.generateToken("Krtek");
         when(gameService.saveGame(eq(game))).thenReturn(saved);
         String json = mapper.writeValueAsString(game);
-        mockMvc.perform(post("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.gameId").value("auticko"));
+        mockMvc.perform(post("/api/v1/games")
+                .header(TOKEN_HEADER, token)
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.gameId").value("auticko"));
     }
 
     @Test
     public void saveNewGameWithIdSet() throws Exception {
         Game game = new Game("Krtek", "auticko");
         String json = mapper.writeValueAsString(game);
-        mockMvc.perform(post("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andExpect(status().isBadRequest());
+        String token = tokenService.generateToken("Krtek");
+        mockMvc.perform(post("/api/v1/games")
+                .header(TOKEN_HEADER, token)
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isBadRequest());
         verify(gameService, never()).saveGame(any(Game.class));
     }
 
@@ -123,9 +127,12 @@ public class GameControllerTest {
         game.setDetails("Ahoj");
         when(gameService.saveGame(eq(game))).thenReturn(game);
         String json = mapper.writeValueAsString(game);
-        mockMvc.perform(put("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.gameId").value("auticko"));
+        String token = tokenService.generateToken("Krtek");
+        mockMvc.perform(put("/api/v1/games")
+                .header(TOKEN_HEADER, token)
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.gameId").value("auticko"));
     }
 
     @Test
@@ -133,7 +140,31 @@ public class GameControllerTest {
         Game game = new Game("Krtek", null);
         String json = mapper.writeValueAsString(game);
         mockMvc.perform(put("/api/v1/games").contentType(MediaType.APPLICATION_JSON).content(json))
-            .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
+        verify(gameService, never()).saveGame(any(Game.class));
+    }
+
+    @Test
+    public void saveNewGameSpoofing() throws Exception {
+        Game game = new Game("Sova", null);
+        String token = tokenService.generateToken("Krtek");
+        String json = mapper.writeValueAsString(game);
+        mockMvc.perform(post("/api/v1/games")
+                .header(TOKEN_HEADER, token)
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isBadRequest());
+        verify(gameService, never()).saveGame(any(Game.class));
+    }
+
+    @Test
+    public void saveExistingGameSpoofing() throws Exception {
+        Game game = new Game("Sova", "auticko");
+        String token = tokenService.generateToken("Krtek");
+        String json = mapper.writeValueAsString(game);
+        mockMvc.perform(put("/api/v1/games")
+                .header(TOKEN_HEADER, token)
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isBadRequest());
         verify(gameService, never()).saveGame(any(Game.class));
     }
 
