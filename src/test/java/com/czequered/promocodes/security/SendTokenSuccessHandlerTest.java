@@ -61,5 +61,4 @@ public class SendTokenSuccessHandlerTest {
         verify(response, never()).addHeader(eq(TOKEN_HEADER), anyString());
         verify(redirectStrategy, never()).sendRedirect(request, response, corsUrl);
     }
-
 }
