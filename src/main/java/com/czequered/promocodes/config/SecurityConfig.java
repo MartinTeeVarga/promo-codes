@@ -1,5 +1,8 @@
 package com.czequered.promocodes.config;
 
+import com.czequered.promocodes.security.AuthenticationTokenFilter;
+import com.czequered.promocodes.security.EntryPointUnauthorizedHandler;
+import com.czequered.promocodes.security.SendTokenSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;

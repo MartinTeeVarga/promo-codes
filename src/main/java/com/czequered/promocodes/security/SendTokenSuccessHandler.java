@@ -1,4 +1,4 @@
-package com.czequered.promocodes.config;
+package com.czequered.promocodes.security;
 
 import com.czequered.promocodes.service.TokenServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

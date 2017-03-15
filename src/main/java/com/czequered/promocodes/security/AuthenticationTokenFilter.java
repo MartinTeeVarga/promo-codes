@@ -1,9 +1,8 @@
-package com.czequered.promocodes.config;
+package com.czequered.promocodes.security;
 
+import com.czequered.promocodes.config.Constants;
 import com.czequered.promocodes.service.InvalidTokenException;
 import com.czequered.promocodes.service.TokenServiceImpl;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,8 +21,6 @@ import java.io.IOException;
 import java.util.Collections;
 
 public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
-
-    protected final Log logger = LogFactory.getLog(this.getClass());
 
     @Autowired
     private TokenServiceImpl tokenService;
@@ -45,6 +42,7 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
 
             chain.doFilter(request, response);
         } catch (InvalidTokenException e) {
+            logger.debug("Invalid token, IP: " + request.getRemoteHost(), e);
             ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
         }
     }
