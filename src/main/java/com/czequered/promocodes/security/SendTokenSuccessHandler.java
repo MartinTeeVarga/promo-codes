@@ -35,7 +35,7 @@ public class SendTokenSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
         String token = tokenUtils.generateToken(name);
 
         response.addHeader(TOKEN_HEADER, token);
-        getRedirectStrategy().sendRedirect(request, response, "http://localhost:8080");
+        getRedirectStrategy().sendRedirect(request, response, corsUrl);
     }
 
 }
