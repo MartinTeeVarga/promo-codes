@@ -27,19 +27,17 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String authToken = httpRequest.getHeader(Constants.TOKEN_HEADER);
         try {
-            String username = tokenService.getUserIdFromToken(authToken);
-
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                HttpServletRequest httpRequest = (HttpServletRequest) request;
+                String authToken = httpRequest.getHeader(Constants.TOKEN_HEADER);
+                String username = tokenService.getUserIdFromToken(authToken);
                 UserDetails userDetails = new User(username, "", Collections.emptyList());
                 tokenService.validateToken(authToken);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-
             chain.doFilter(request, response);
         } catch (InvalidTokenException e) {
             logger.debug("Invalid token, IP: " + request.getRemoteHost(), e);
