@@ -62,6 +62,7 @@ public class TokenServiceImpl implements TokenService {
         }
     }
 
+    //TODO empty token test
     private Claims getClaimsFromToken(String token) {
         return Jwts.parser()
                 .setClock(() -> new Date(clockService.getClock().millis()))

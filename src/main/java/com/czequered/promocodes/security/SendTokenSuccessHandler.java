@@ -1,6 +1,7 @@
 package com.czequered.promocodes.security;
 
 import com.czequered.promocodes.service.TokenServiceImpl;
+import com.czequered.promocodes.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,9 @@ public class SendTokenSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
     @Autowired
     TokenServiceImpl tokenUtils;
 
+    @Autowired
+    UserService userService;
+
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         if (response.isCommitted()) {
@@ -32,6 +36,9 @@ public class SendTokenSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
             return;
         }
         String name = authentication.getName();
+
+        System.out.println("request = " + request);
+
         String token = tokenUtils.generateToken(name);
 
         response.addHeader(TOKEN_HEADER, token);

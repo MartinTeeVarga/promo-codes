@@ -20,7 +20,6 @@ import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticat
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.filter.CompositeFilter;
@@ -49,9 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // @formatter:off
         httpSecurity
             .authorizeRequests()
-                .antMatchers("/", "/login**", "/webjars/**").permitAll()
-                .anyRequest().authenticated()
-            .and().sessionManagement()
+//                .antMatchers("/", "/login**", "/webjars/**").permitAll()
+                .anyRequest().permitAll()
+                .and()
+                .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and().exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler)
@@ -64,13 +64,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
 
         httpSecurity
-            .addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(authenticationTokenFilter(), BasicAuthenticationFilter.class);
         // @formatter:on
     }
 
     @Bean
     public AuthenticationTokenFilter authenticationTokenFilter() throws Exception {
-        AuthenticationTokenFilter authenticationTokenFilter = new AuthenticationTokenFilter();
+        AuthenticationTokenFilter authenticationTokenFilter = new AuthenticationTokenFilter("api");
         authenticationTokenFilter.setAuthenticationManager(authenticationManagerBean());
         return authenticationTokenFilter;
     }
