@@ -1,9 +1,8 @@
-package com.czequered.promocodes.config;
+package com.czequered.promocodes.security;
 
+import com.czequered.promocodes.config.Constants;
 import com.czequered.promocodes.service.InvalidTokenException;
 import com.czequered.promocodes.service.TokenServiceImpl;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,28 +22,25 @@ import java.util.Collections;
 
 public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
 
-    protected final Log logger = LogFactory.getLog(this.getClass());
-
     @Autowired
     private TokenServiceImpl tokenService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String authToken = httpRequest.getHeader(Constants.TOKEN_HEADER);
         try {
-            String username = tokenService.getUserIdFromToken(authToken);
-
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                HttpServletRequest httpRequest = (HttpServletRequest) request;
+                String authToken = httpRequest.getHeader(Constants.TOKEN_HEADER);
+                String username = tokenService.getUserIdFromToken(authToken);
                 UserDetails userDetails = new User(username, "", Collections.emptyList());
                 tokenService.validateToken(authToken);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-
             chain.doFilter(request, response);
         } catch (InvalidTokenException e) {
+            logger.debug("Invalid token, IP: " + request.getRemoteHost(), e);
             ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
         }
     }

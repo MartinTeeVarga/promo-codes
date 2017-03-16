@@ -1,4 +1,4 @@
-package com.czequered.promocodes.config;
+package com.czequered.promocodes.security;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
