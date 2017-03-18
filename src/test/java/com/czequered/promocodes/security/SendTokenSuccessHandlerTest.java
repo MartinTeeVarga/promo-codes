@@ -54,7 +54,7 @@ public class SendTokenSuccessHandlerTest {
     }
 
     @Test
-    public void handleAlreadyRedirected() throws Exception {
+    public void handlerAlreadyRedirected() throws Exception {
         when(response.isCommitted()).thenReturn(true);
         handler.handle(request, response, authentication);
 

@@ -10,3 +10,7 @@ jepice:
     header: X-JWT-Token
     expiry: 3600000
   api: /api/**
+facebook:
+  endpoint: /login/facebook
+github:
+  endpoint: /login/github
