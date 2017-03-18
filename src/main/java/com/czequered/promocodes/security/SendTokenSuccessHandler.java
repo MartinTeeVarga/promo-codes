@@ -36,9 +36,6 @@ public class SendTokenSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
             return;
         }
         String name = authentication.getName();
-
-        System.out.println("request = " + request);
-
         String token = tokenUtils.generateToken(name);
 
         response.addHeader(TOKEN_HEADER, token);

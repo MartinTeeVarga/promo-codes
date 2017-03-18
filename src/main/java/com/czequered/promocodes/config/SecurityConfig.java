@@ -1,7 +1,6 @@
 package com.czequered.promocodes.config;
 
 import com.czequered.promocodes.security.AuthenticationTokenFilter;
-import com.czequered.promocodes.security.EntryPointUnauthorizedHandler;
 import com.czequered.promocodes.security.SendTokenSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
@@ -13,13 +12,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.filter.CompositeFilter;
@@ -34,45 +33,34 @@ import java.util.List;
 @Configuration
 @EnableOAuth2Client
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
     @Autowired
     OAuth2ClientContext oauth2ClientContext;
 
     @Autowired
-    private EntryPointUnauthorizedHandler unauthorizedHandler;
+    SendTokenSuccessHandler successHandler;
 
     @Autowired
-    SendTokenSuccessHandler successHandler;
+    AuthenticationTokenFilter authenticationTokenFilter;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         // @formatter:off
         httpSecurity
-            .authorizeRequests()
-//                .antMatchers("/", "/login**", "/webjars/**").permitAll()
-                .anyRequest().permitAll()
+            .antMatcher("/**")
+                .authorizeRequests()
+                .antMatchers("/", "/login**", "/webjars/**", "/api/**").permitAll()
+                .anyRequest().authenticated()
+                .and().exceptionHandling()
+                    .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/"))
+                .and().logout()
+                    .logoutSuccessUrl("/").permitAll()
+                .and().csrf()
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and().exceptionHandling()
-                .authenticationEntryPoint(unauthorizedHandler)
-            .and().logout()
-                .logoutSuccessUrl("/").permitAll()
-            .and().csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-
-        httpSecurity
-            .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
-
-        httpSecurity
-                .addFilterBefore(authenticationTokenFilter(), BasicAuthenticationFilter.class);
+                    .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
+                    .addFilterBefore(authenticationTokenFilter, BasicAuthenticationFilter.class);
         // @formatter:on
-    }
-
-    @Bean
-    public AuthenticationTokenFilter authenticationTokenFilter() throws Exception {
-        AuthenticationTokenFilter authenticationTokenFilter = new AuthenticationTokenFilter("api");
-        authenticationTokenFilter.setAuthenticationManager(authenticationManagerBean());
-        return authenticationTokenFilter;
     }
 
     @Bean
@@ -109,13 +97,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         OAuth2RestTemplate oAuth2RestTemplate = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
         oAuth2ClientAuthenticationFilter.setRestTemplate(oAuth2RestTemplate);
         UserInfoTokenServices tokenServices = new UserInfoTokenServices(client.getResource().getUserInfoUri(),
-            client.getClient().getClientId());
+                client.getClient().getClientId());
         tokenServices.setRestTemplate(oAuth2RestTemplate);
         oAuth2ClientAuthenticationFilter.setTokenServices(tokenServices);
         oAuth2ClientAuthenticationFilter.setAuthenticationSuccessHandler(successHandler);
         return oAuth2ClientAuthenticationFilter;
     }
-
 }
 
 class ClientResources {

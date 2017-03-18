@@ -38,6 +38,16 @@ public class TokenServiceImplTest {
     }
 
     @Test
+    public void nullTokenValidateTest() {
+        assertThatThrownBy(() -> service.validateToken(null)).isInstanceOf(InvalidTokenException.class);
+    }
+
+    @Test
+    public void emptyTokenValidateTest() {
+        assertThatThrownBy(() -> service.validateToken("")).isInstanceOf(InvalidTokenException.class);
+    }
+
+    @Test
     public void validateTokenTest() throws Exception {
         when(clock.millis()).thenReturn(1000000L);
         String token = service.generateToken("Krtek");
