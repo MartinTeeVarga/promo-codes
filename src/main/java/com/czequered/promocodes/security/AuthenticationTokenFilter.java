@@ -2,14 +2,12 @@ package com.czequered.promocodes.security;
 
 import com.czequered.promocodes.config.Constants;
 import com.czequered.promocodes.service.InvalidTokenException;
-import com.czequered.promocodes.service.TokenServiceImpl;
+import com.czequered.promocodes.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -18,25 +16,28 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
 
-public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
+@Component
+public class AuthenticationTokenFilter extends GenericFilterBean {
+
+    private TokenService tokenService;
+
+    private final AntPathRequestMatcher antPathRequestMatcher;
 
     @Autowired
-    private TokenServiceImpl tokenService;
+    public AuthenticationTokenFilter(TokenService tokenService,
+                                     @Value("${jepice.api}") String apiPattern) {
+        this.tokenService = tokenService;
+        antPathRequestMatcher = new AntPathRequestMatcher(apiPattern);
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                HttpServletRequest httpRequest = (HttpServletRequest) request;
+            HttpServletRequest httpRequest = (HttpServletRequest) request;
+            if (antPathRequestMatcher.matches(httpRequest)) {
                 String authToken = httpRequest.getHeader(Constants.TOKEN_HEADER);
-                String username = tokenService.getUserIdFromToken(authToken);
-                UserDetails userDetails = new User(username, "", Collections.emptyList());
                 tokenService.validateToken(authToken);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             chain.doFilter(request, response);
         } catch (InvalidTokenException e) {

@@ -1,5 +1,6 @@
 package com.czequered.promocodes.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -15,6 +16,6 @@ public class IdGeneratorServiceImpl implements IdGeneratorService {
 
     @Override
     public String generate() {
-        return new BigInteger(130, random).toString(32).toUpperCase();
+        return StringUtils.rightPad(new BigInteger(130, random).toString(32).toUpperCase(), 26, 'X');
     }
 }

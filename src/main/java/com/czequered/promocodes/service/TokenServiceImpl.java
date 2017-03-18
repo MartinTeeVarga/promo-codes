@@ -1,12 +1,11 @@
 package com.czequered.promocodes.service;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
@@ -19,7 +18,7 @@ import static io.jsonwebtoken.Claims.SUBJECT;
 /**
  * @author Martin Varga
  */
-@Component
+@Service
 public class TokenServiceImpl implements TokenService {
 
     private String secret;
@@ -55,10 +54,13 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override public void validateToken(String token) throws InvalidTokenException {
+        if (StringUtils.isEmpty(token)) {
+            throw new InvalidTokenException("Empty token.");
+        }
         try {
             getClaimsFromToken(token);
-        } catch (ExpiredJwtException e) {
-            throw new InvalidTokenException("Expired token.", e);
+        } catch (Exception e) {
+            throw new InvalidTokenException("Invalid token.", e);
         }
     }
 

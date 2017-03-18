@@ -9,3 +9,4 @@ jepice:
     secret: NotSoSecret!
     header: X-JWT-Token
     expiry: 3600000
+  api: /api/**
