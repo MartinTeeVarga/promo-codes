@@ -3,12 +3,10 @@ package com.czequered.promocodes.repository;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.Serializable;
-
 /**
  * @author Martin Varga
  */
-public class AbstractDynamoDBRepository<T> implements Serializable {
+public class AbstractDynamoDBRepository<T> {
     DynamoDBMapper mapper;
 
     @Autowired
