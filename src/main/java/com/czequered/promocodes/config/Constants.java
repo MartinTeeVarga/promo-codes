@@ -3,10 +3,13 @@ package com.czequered.promocodes.config;
 /**
  * @author Martin Varga
  */
-public interface Constants {
-    String TOKEN_HEADER = "X-Token";
+public class Constants {
+    public static final String TOKEN_HEADER = "X-Token";
 
-    String GITHUB_PREFIX = "GITHUB-";
+    public static final String GITHUB_PREFIX = "GITHUB-";
 
-    String FACEBOOK_PREFIX = "FACEBOOK-";
+    public static final String FACEBOOK_PREFIX = "FACEBOOK-";
+
+    private Constants() {
+    }
 }
