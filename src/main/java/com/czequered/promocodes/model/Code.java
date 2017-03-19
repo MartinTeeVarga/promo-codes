@@ -86,17 +86,22 @@ public class Code {
         this.payload = payload;
     }
 
-    @Override public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Code)) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Code)) {
+            return false;
+        }
 
-        Code code = (Code) o;
+        Code other = (Code) o;
 
-        if (!gameId.equals(code.gameId)) return false;
-        return Objects.equals(this.codeId, code.codeId);
+        return Objects.equals(this.gameId, other.gameId) && Objects.equals(this.codeId, other.codeId);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return Objects.hash(gameId, codeId);
     }
 }

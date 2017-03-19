@@ -53,17 +53,20 @@ public class Game {
         this.details = details;
     }
 
-    @Override public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Game)) return false;
-
-        Game game = (Game) o;
-
-        if (!userId.equals(game.userId)) return false;
-        return Objects.equals(this.gameId, game.gameId);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Game)) {
+            return false;
+        }
+        Game other = (Game) o;
+        return Objects.equals(this.userId, other.userId) && Objects.equals(this.gameId, other.gameId);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return Objects.hash(userId, gameId);
     }
 }

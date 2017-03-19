@@ -1,10 +1,8 @@
 package com.czequered.promocodes.model;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Martin Varga
@@ -23,8 +21,12 @@ public class UserTest {
         User sameFbUser = new User();
         sameFbUser.setId("facebook-123");
 
+        assertThat(fbUser).isEqualTo(fbUser);
         assertThat(fbUser).isEqualTo(sameFbUser);
+        assertThat(sameFbUser).isEqualTo(fbUser);
         assertThat(fbUser).isNotEqualTo(ghUser);
+        assertThat(fbUser).isNotEqualTo(null);
+        assertThat(fbUser).isNotEqualTo("facebook-123");
     }
 
     @Test

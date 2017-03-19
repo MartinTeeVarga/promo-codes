@@ -5,6 +5,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Objects;
+
 /**
  * @author Martin Varga
  */
@@ -44,12 +46,15 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-        User user = (User) o;
-
-        return id.equals(user.id);
+        User other = (User) o;
+        return Objects.equals(this.getId(), other.getId());
     }
 
     @Override
