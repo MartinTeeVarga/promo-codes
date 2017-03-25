@@ -10,9 +10,11 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.RedirectStrategy;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import static com.czequered.promocodes.config.Constants.TOKEN_HEADER;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -52,8 +54,11 @@ public class SendTokenSuccessHandlerTest {
         when(userService.getUser(eq("GITHUB-Krtek"))).thenReturn(new User("GITHUB-Krtek"));
         handler.handle(request, response, authentication);
 
-        ArgumentCaptor<String> headerCaptor = ArgumentCaptor.forClass(String.class);
         verify(response, atLeastOnce()).addHeader(eq(TOKEN_HEADER), eq("Token"));
+        ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
+        verify(response, atLeastOnce()).addCookie(cookieCaptor.capture());
+        assertThat(cookieCaptor.getValue().getName()).isEqualTo(TOKEN_HEADER);
+        assertThat(cookieCaptor.getValue().getValue()).isEqualTo("Token");
         verify(redirectStrategy, atLeastOnce()).sendRedirect(request, response, corsUrl);
         verify(userService, never()).saveUser(any(User.class));
     }
@@ -68,6 +73,10 @@ public class SendTokenSuccessHandlerTest {
         handler.handle(request, response, authentication);
 
         verify(response, atLeastOnce()).addHeader(eq(TOKEN_HEADER), eq("Token"));
+        ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
+        verify(response, atLeastOnce()).addCookie(cookieCaptor.capture());
+        assertThat(cookieCaptor.getValue().getName()).isEqualTo(TOKEN_HEADER);
+        assertThat(cookieCaptor.getValue().getValue()).isEqualTo("Token");
         verify(redirectStrategy, atLeastOnce()).sendRedirect(request, response, corsUrl);
         verify(userService, atLeastOnce()).saveUser(eq(new User("FACEBOOK-Krtek")));
     }
@@ -78,7 +87,6 @@ public class SendTokenSuccessHandlerTest {
         when(request.getServletPath()).thenReturn("/login/foo");
         handler.handle(request, response, authentication);
 
-        ArgumentCaptor<String> headerCaptor = ArgumentCaptor.forClass(String.class);
         verify(response, atLeastOnce()).sendError(eq(HttpServletResponse.SC_UNAUTHORIZED), anyString());
         verify(redirectStrategy, never()).sendRedirect(request, response, corsUrl);
     }

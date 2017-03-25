@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -71,6 +72,7 @@ public class SendTokenSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
         }
 
         String token = tokenService.generateToken(name);
+        response.addCookie(new Cookie(TOKEN_HEADER, token));
         response.addHeader(TOKEN_HEADER, token);
         getRedirectStrategy().sendRedirect(request, response, corsUrl);
     }
