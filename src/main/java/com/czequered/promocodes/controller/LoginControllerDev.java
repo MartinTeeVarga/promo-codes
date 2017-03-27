@@ -22,8 +22,8 @@ import static com.czequered.promocodes.config.Constants.TOKEN_HEADER;
  */
 @RestController
 @Profile("dev")
-public class DevLoginController {
-    Logger logger = LoggerFactory.getLogger(DevLoginController.class);
+public class LoginControllerDev {
+    Logger logger = LoggerFactory.getLogger(LoginControllerDev.class);
 
     @Value("${jepice.frontend.url:none}")
     private String corsUrl;

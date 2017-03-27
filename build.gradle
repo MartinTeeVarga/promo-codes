@@ -52,6 +52,7 @@ test {
     jacoco {
         excludes = [
                 "com.czequered.promocodes.config.*",
+                "com.czequered.promocodes.controller.*Dev",
                 "com.czequered.promocodes.service.*Dev",
                 "com.czequered.promocodes.service.*Exception",
                 "com.czequered.promocodes.PromoCodesApp"
