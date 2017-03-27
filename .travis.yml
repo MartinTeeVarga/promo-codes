@@ -1,4 +1,6 @@
 language: java
+env:
+  - CI=travis
 jdk:
   - oraclejdk8
 after_success:
