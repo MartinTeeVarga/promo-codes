@@ -29,8 +29,9 @@ public class GameServiceImpl implements GameService {
         return repository.findByUserIdAndGameId(userId, gameId);
     }
 
-    @Override public void deleteGame(String user, String game) {
-        repository.delete(new Game(user, game));
+    @Override
+    public void deleteGame(String userId, String gameId) {
+        repository.delete(new Game(userId, gameId));
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.czequered.promocodes.service;
 
 import com.czequered.promocodes.model.Code;
-import com.czequered.promocodes.repository.CodeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -24,17 +22,18 @@ public class CodeServiceDev implements CodeService {
 
     Map<Code, Code> localCache;
 
-    @Autowired
-    public CodeServiceDev(CodeRepository codeRepository) {
+    public CodeServiceDev() {
         localCache = new HashMap<>();
-        for (int i = 0; i < 75; i++) {
+        for (int i = 1; i <= 99; i++) {
             Code code = new Code();
-            code.setGameId("GAME0");
-            code.setCodeId("CODE" + i);
+            String gameId = "GAME-" + (i % 3);
+            code.setGameId(gameId);
+            String codeId = gameId + "-CODE-" + i;
+            code.setCodeId(codeId);
             code.setFrom(Instant.now().minus(i, ChronoUnit.DAYS).toString());
             code.setTo(Instant.now().plus(i, ChronoUnit.DAYS).toString());
             code.setPub(i > 50);
-            code.setPayload("Payload " + i);
+            code.setPayload("Payload: " + gameId + " - " + codeId);
             saveCode(code);
         }
     }
@@ -43,7 +42,7 @@ public class CodeServiceDev implements CodeService {
     public List<Code> getCodes(String gameId) {
         return localCache.keySet().stream()
                 .filter(k -> k.getGameId().equals(gameId))
-            .map(k -> localCache.get(k))
+                .map(localCache::get)
             .collect(Collectors.toList());
     }
 

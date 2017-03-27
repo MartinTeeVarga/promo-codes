@@ -12,7 +12,7 @@ public interface GameService {
 
     Game getGame(String userId, String gameId);
 
-    void deleteGame(String user, String game);
+    void deleteGame(String userId, String gameId);
 
     Game saveGame(Game game);
 }

@@ -20,9 +20,13 @@ public class UserServiceDev implements UserService {
 
     public UserServiceDev() {
         localCache = new HashMap<>();
-        User root = new User();
-        root.setId("root");
-        localCache.put("root", root);
+        User krtek = new User();
+        krtek.setId("Krtek");
+        localCache.put("Krtek", krtek);
+
+        User sova = new User();
+        sova.setId("Sova");
+        localCache.put("Sova", sova);
     }
 
     @Override public User getUser(String userId) {
