@@ -103,7 +103,7 @@ check.dependsOn jacocoTestReport
 tasks.withType(JavaCompile) {
     def ci = System.getenv("CI") ?: "none"
     options.incremental = ci == "none"
-    logger.lifecycle("Running ${options.incremental ? 'locally' : 'in ' + ci}, task $name ${options.incremental ? 'using' : 'not using'} incremental compilation.")
+    logger.lifecycle("Running ${options.incremental ? 'locally' : 'in ' + ci}, task $name ${options.incremental ? '' : 'not'} using incremental compilation.")
 }
 
 task wrapper(type: Wrapper) {
