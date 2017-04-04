@@ -97,7 +97,6 @@ jacocoTestReport {
         html.destination "${buildDir}/jacocoHtml"
     }
 }
-
 check.dependsOn jacocoTestReport
 
 tasks.withType(JavaCompile) {
@@ -107,5 +106,5 @@ tasks.withType(JavaCompile) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.4'
+    gradleVersion = '3.4.1'
 }
