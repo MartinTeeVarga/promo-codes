@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.springframework.http.HttpMethod.OPTIONS;
+
 @Component
 public class AuthenticationTokenFilter extends GenericFilterBean {
 
@@ -35,7 +37,7 @@ public class AuthenticationTokenFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
-            if (antPathRequestMatcher.matches(httpRequest)) {
+            if (antPathRequestMatcher.matches(httpRequest) && !OPTIONS.name().equals(httpRequest.getMethod())) {
                 String authToken = httpRequest.getHeader(Constants.TOKEN_HEADER);
                 tokenService.validateToken(authToken);
             }

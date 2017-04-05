@@ -11,6 +11,8 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.OPTIONS;
 
 /**
  * @author Martin Varga
@@ -35,6 +37,7 @@ public class AuthenticationTokenFilterTest {
     @Test
     public void doFilterTest() throws Exception {
         when(request.getServletPath()).thenReturn("/api/v1/user");
+        when(request.getMethod()).thenReturn(GET.name());
         filter.doFilter(request, response, filterChain);
         verify(filterChain, atLeastOnce()).doFilter(request, response);
     }
@@ -43,6 +46,7 @@ public class AuthenticationTokenFilterTest {
     public void doFilterInvalidTokenTest() throws Exception {
         Mockito.doThrow(new InvalidTokenException()).when(tokenService).validateToken(anyString());
         when(request.getServletPath()).thenReturn("/api/v1/user");
+        when(request.getMethod()).thenReturn(GET.name());
         filter.doFilter(request, response, filterChain);
         verify(filterChain, never()).doFilter(request, response);
         verify(response, atLeastOnce()).sendError(eq(HttpServletResponse.SC_UNAUTHORIZED), anyString());
@@ -51,6 +55,16 @@ public class AuthenticationTokenFilterTest {
     @Test
     public void doFilterOutsideApiUrl() throws Exception {
         when(request.getServletPath()).thenReturn("/login/facebook");
+        when(request.getMethod()).thenReturn(GET.name());
+        filter.doFilter(request, response, filterChain);
+        verify(tokenService, never()).validateToken(anyString());
+        verify(filterChain, atLeastOnce()).doFilter(request, response);
+    }
+
+    @Test
+    public void doFilterOptions() throws Exception {
+        when(request.getServletPath()).thenReturn("/api/v1/user");
+        when(request.getMethod()).thenReturn(OPTIONS.name());
         filter.doFilter(request, response, filterChain);
         verify(tokenService, never()).validateToken(anyString());
         verify(filterChain, atLeastOnce()).doFilter(request, response);
