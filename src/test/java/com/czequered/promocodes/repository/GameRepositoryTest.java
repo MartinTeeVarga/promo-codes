@@ -76,7 +76,7 @@ public class GameRepositoryTest {
         Game game = new Game();
         game.setUserId(userId);
         game.setGameId(gameId);
-        game.setDetails("{}");
+        game.addAttribute("details", "none");
         gameRepository.save(game);
     }
 }

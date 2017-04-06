@@ -85,20 +85,20 @@ public class GameControllerTest {
     @Test
     public void getGameTest() throws Exception {
         Game game = new Game("Krtek", "auticko");
-        game.setDetails("Ahoj");
+        game.addAttribute("details", "none");
         when(gameService.getGame(eq("Krtek"), eq("auticko"))).thenReturn(game);
         String token = tokenService.generateToken("Krtek");
         mockMvc.perform(get("/api/v1/games/auticko").header(TOKEN_HEADER, token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.details").value("Ahoj"));
+                .andExpect(jsonPath("$.attributes.details").value("none"));
     }
 
     @Test
     public void saveNewGame() throws Exception {
         Game game = new Game("Krtek", null);
-        game.setDetails("Ahoj");
+        game.addAttribute("details", "none");
         Game saved = new Game(game.getUserId(), "auticko");
-        saved.setDetails(game.getDetails());
+        saved.setAttributes(game.getAttributes());
         String token = tokenService.generateToken("Krtek");
         when(gameService.saveGame(eq(game))).thenReturn(saved);
         String json = mapper.writeValueAsString(game);
@@ -124,7 +124,7 @@ public class GameControllerTest {
     @Test
     public void saveExistingGame() throws Exception {
         Game game = new Game("Krtek", "auticko");
-        game.setDetails("Ahoj");
+        game.addAttribute("details", "none");
         when(gameService.saveGame(eq(game))).thenReturn(game);
         String json = mapper.writeValueAsString(game);
         String token = tokenService.generateToken("Krtek");

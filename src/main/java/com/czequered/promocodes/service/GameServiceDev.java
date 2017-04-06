@@ -22,15 +22,15 @@ public class GameServiceDev implements GameService {
     public GameServiceDev() {
         localCache = new HashMap<>();
         Game game1 = new Game("Krtek", "GAME-1");
-        game1.setDetails("{}");
+        game1.addAttribute("details", "none");
         localCache.put(game1, game1);
 
         Game game2 = new Game("Krtek", "GAME-2");
-        game2.setDetails("{}");
+        game2.addAttribute("details", "none");
         localCache.put(game1, game1);
 
         Game game3 = new Game("Sova", "GAME-3");
-        game3.setDetails("{}");
+        game3.addAttribute("details", "none");
         localCache.put(game1, game1);
     }
 
