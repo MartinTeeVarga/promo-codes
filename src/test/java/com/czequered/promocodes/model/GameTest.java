@@ -17,7 +17,7 @@ public class GameTest {
         Game game2 = new Game();
         game2.setGameId("auticko");
         game2.setUserId("Krtek");
-        game2.addAttribute("details", "none");
+        game2.addAttribute("description", "A game");
 
         assertThat(game1).isEqualTo(game2);
         assertThat(game1).isEqualTo(game2);
@@ -33,12 +33,12 @@ public class GameTest {
         Game game2 = new Game();
         game2.setGameId("kalhoty");
         game2.setUserId("Krtek");
-        game2.addAttribute("details", "none");
+        game2.addAttribute("description", "A game");
 
         Game game3 = new Game();
         game3.setGameId("kalhoty");
         game3.setUserId("Sova");
-        game3.addAttribute("details", "none");
+        game3.addAttribute("description", "A game");
 
         assertThat(game1).isNotEqualTo(game2);
         assertThat(game2).isNotEqualTo(game3);

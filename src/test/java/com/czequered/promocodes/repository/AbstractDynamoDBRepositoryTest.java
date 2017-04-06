@@ -47,7 +47,7 @@ public class AbstractDynamoDBRepositoryTest {
         Game game = new Game();
         game.setUserId("Krtek");
         game.setGameId("auticko");
-        game.addAttribute("details", "none");
+        game.addAttribute("description", "A game");
         Game saved = gameRepository.save(game);
         assertThat(saved).isEqualTo(game);
         assertThat(saved.getAttributes()).isEqualTo(game.getAttributes());
@@ -58,7 +58,7 @@ public class AbstractDynamoDBRepositoryTest {
         Game game = new Game();
         game.setUserId("Krtek");
         game.setGameId("auticko");
-        game.addAttribute("details", "none");
+        game.addAttribute("description", "A game");
         Game saved = gameRepository.save(game);
         gameRepository.delete(saved);
         Game found = gameRepository.findByUserIdAndGameId("Krtek", "auticko");
