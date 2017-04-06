@@ -12,11 +12,12 @@ public class UserTest {
     public void equalsTest() throws Exception {
         User fbUser = new User();
         fbUser.setId("facebook-123");
-        fbUser.setDetails("hello");
+        fbUser.addAttribute("hello", "world");
 
         User ghUser = new User();
         ghUser.setId("github-123");
-        ghUser.setDetails("hello");
+        ghUser.addAttribute("hello", "world");
+        ghUser.addAttribute("Ahoj", "světe");
 
         User sameFbUser = new User();
         sameFbUser.setId("facebook-123");
@@ -33,7 +34,7 @@ public class UserTest {
     public void hashCodeTest() throws Exception {
         User fbUser = new User();
         fbUser.setId("facebook-123");
-        fbUser.setDetails("hello");
+        fbUser.addAttribute("hello", "world");
 
         User sameFbUser = new User("facebook-123");
 

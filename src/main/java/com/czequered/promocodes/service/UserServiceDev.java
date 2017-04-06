@@ -22,6 +22,8 @@ public class UserServiceDev implements UserService {
         localCache = new HashMap<>();
         User krtek = new User();
         krtek.setId("Krtek");
+        krtek.addAttribute("name", "Krteček");
+        krtek.addAttribute("credit", "10");
         localCache.put("Krtek", krtek);
 
         User sova = new User();

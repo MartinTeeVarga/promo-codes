@@ -48,7 +48,7 @@ public class UserRepositoryTest {
     @Test
     public void findByUserId() {
         User krtek = new User("Krtek");
-        krtek.setDetails("Mys");
+        krtek.addAttribute("hello", "world");
         User sova = new User("Sova");
 
         userRepository.save(krtek);

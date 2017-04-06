@@ -55,30 +55,30 @@ public class UserControllerTest {
     @Test
     public void getUser() throws Exception {
         User user = new User("Krtek");
-        user.setDetails("Mys");
+        user.addAttribute("hello", "world");
         when(userService.getUser(eq("Krtek"))).thenReturn(user);
         String token = tokenService.generateToken("Krtek");
         mockMvc.perform(get("/api/v1/user").header(TOKEN_HEADER, token))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.details").value("Mys"));
+                .andExpect(jsonPath("$.attributes.hello").value("world"));
     }
 
     @Test
     public void saveExistingUser() throws Exception {
         User user = new User("Krtek");
-        user.setDetails("Mys");
+        user.addAttribute("hello", "world");
         when(userService.saveUser(any(User.class))).then(i -> i.getArgumentAt(0, User.class));
         String token = tokenService.generateToken("Krtek");
         String json = mapper.writeValueAsString(user);
         mockMvc.perform(put("/api/v1/user").header(TOKEN_HEADER, token).contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.details").value("Mys"));
+                .andExpect(jsonPath("$.attributes.hello").value("world"));
     }
 
     @Test
     public void saveExistingUserSpoofing() throws Exception {
         User user = new User("Sova");
-        user.setDetails("Mys");
+        user.addAttribute("hello", "world");
         String token = tokenService.generateToken("Krtek");
         String json = mapper.writeValueAsString(user);
         mockMvc.perform(put("/api/v1/user").header(TOKEN_HEADER, token).contentType(MediaType.APPLICATION_JSON).content(json))
