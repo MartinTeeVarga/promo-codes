@@ -27,11 +27,11 @@ public class GameServiceDev implements GameService {
 
         Game game2 = new Game("Krtek", "GAME-2");
         game2.addAttribute("description", "A game 2");
-        localCache.put(game1, game1);
+        localCache.put(game2, game2);
 
         Game game3 = new Game("Sova", "GAME-3");
         game3.addAttribute("description", "A game 3");
-        localCache.put(game1, game1);
+        localCache.put(game3, game3);
     }
 
     @Override
