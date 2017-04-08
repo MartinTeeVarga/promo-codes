@@ -90,7 +90,7 @@ public class GameControllerTest {
         String token = tokenService.generateToken("Krtek");
         mockMvc.perform(get("/api/v1/games/auticko").header(TOKEN_HEADER, token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.attributes.details").value("none"));
+                .andExpect(jsonPath("$.attributes.description").value("A game"));
     }
 
     @Test
