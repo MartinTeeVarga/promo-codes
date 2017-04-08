@@ -3,6 +3,8 @@ package com.czequered.promocodes.controller;
 import com.czequered.promocodes.model.Game;
 import com.czequered.promocodes.service.GameService;
 import com.czequered.promocodes.service.TokenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RequestMapping("/api/v1/games")
 public class GameController {
 
+    Logger logger = LoggerFactory.getLogger(GameController.class);
+
     private GameService gameService;
 
     private TokenService tokenService;
@@ -35,6 +39,7 @@ public class GameController {
         method = GET,
         produces = APPLICATION_JSON_VALUE)
     public HttpEntity<List<Game>> list(@RequestHeader(name = TOKEN_HEADER) String token) {
+        logger.debug("Listing all games");
         String userIdFromToken = tokenService.getUserIdFromToken(token);
         List<Game> games = gameService.getGames(userIdFromToken);
         return new HttpEntity<>(games);

@@ -7,7 +7,13 @@
         </encoder>
     </appender>
 
-    <logger name="com.czequered.promocodes" level="info"/>
+    <springProfile name="dev">
+        <logger name="com.czequered.promocodes" level="debug"/>
+    </springProfile>
+
+    <springProfile name="!dev">
+        <logger name="com.czequered.promocodes" level="info"/>
+    </springProfile>
 
     <root level="info">
         <appender-ref ref="STDOUT"/>

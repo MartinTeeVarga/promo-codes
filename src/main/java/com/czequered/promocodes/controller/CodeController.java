@@ -4,6 +4,8 @@ import com.czequered.promocodes.model.Code;
 import com.czequered.promocodes.service.CodeService;
 import com.czequered.promocodes.service.GameService;
 import com.czequered.promocodes.service.TokenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RestController
 @RequestMapping("/api/v1/games/{gameId}/codes")
 public class CodeController {
+    Logger logger = LoggerFactory.getLogger(CodeController.class);
 
     private CodeService codeService;
     private TokenService tokenService;
@@ -37,6 +40,7 @@ public class CodeController {
             produces = APPLICATION_JSON_VALUE)
     public HttpEntity<List<Code>> list(@RequestHeader(name = TOKEN_HEADER) String token,
                                        @PathVariable("gameId") String gameId) {
+        logger.debug("Listing all codes for '{}'", gameId);
         checkAccessRights(token, gameId);
         List<Code> codes = codeService.getCodes(gameId);
         return new HttpEntity<>(codes);
@@ -90,6 +94,7 @@ public class CodeController {
     public HttpEntity deleteCode(@RequestHeader(name = TOKEN_HEADER) String token,
                                  @PathVariable("gameId") String gameId,
                                  @PathVariable("codeId") String codeId) {
+        logger.debug("Deleting gameId '{}', codeId '{}'", gameId, codeId);
         checkAccessRights(token, gameId);
         codeService.deleteCode(gameId, codeId);
         return HttpEntity.EMPTY;
@@ -99,6 +104,7 @@ public class CodeController {
     private void checkAccessRights(String token, String gameId) {
         String userIdFromToken = tokenService.getUserIdFromToken(token);
         if (gameService.getGame(userIdFromToken, gameId) == null) {
+            logger.debug("Access forbidden to gameId '{}', for token: '{}'", gameId, token);
             throw new AccessForbiddenException();
         }
     }

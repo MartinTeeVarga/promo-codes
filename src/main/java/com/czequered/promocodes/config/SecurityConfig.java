@@ -46,6 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         // @formatter:off
         httpSecurity
+            .csrf()
+                .disable()
             .antMatcher("/**")
                 .authorizeRequests()
                 .antMatchers("/", "/login**", "/webjars/**", "/api/**", "/dev**").permitAll()
