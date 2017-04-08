@@ -26,9 +26,9 @@ public class CodeServiceDev implements CodeService {
         localCache = new HashMap<>();
         for (int i = 1; i <= 99; i++) {
             Code code = new Code();
-            String gameId = "GAME-" + (i % 3);
+            String gameId = "GAME" + (i % 3);
             code.setGameId(gameId);
-            String codeId = gameId + "-CODE-" + i;
+            String codeId = gameId + "CODE" + i;
             code.setCodeId(codeId);
             code.setFrom(Instant.now().minus(i, ChronoUnit.DAYS).toString());
             code.setTo(Instant.now().plus(i, ChronoUnit.DAYS).toString());
